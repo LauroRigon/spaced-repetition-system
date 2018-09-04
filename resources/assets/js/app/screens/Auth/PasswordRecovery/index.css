@@ -1,0 +1,18 @@
+#steps-recovery {
+  position: absolute; 
+  top: 0; 
+  max-width: 80%; 
+  padding: unset;
+}
+
+@media (max-width: 991px) {
+  #steps-recovery {
+    position: absolute;
+    left: 0;
+    max-width: 100px;
+  }
+
+  .respect-side-steps {
+    margin-left: 90px;
+  }
+}

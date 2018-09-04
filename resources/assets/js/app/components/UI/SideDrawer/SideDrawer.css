@@ -1,0 +1,8 @@
+.ui.left.visible.sidebar {
+  width: 230px !important;
+  z-index: 1010;
+  -webkit-box-shadow: 2px 0px 13px -1px rgba(0,0,0,0.75);
+  -moz-box-shadow: 2px 0px 13px -1px rgba(0,0,0,0.75);
+  box-shadow: 2px 0px 13px -1px rgba(0,0,0,0.75);
+  overflow: hidden;
+}

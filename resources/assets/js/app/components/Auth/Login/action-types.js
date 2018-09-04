@@ -1,0 +1,6 @@
+export const SET_EMAIL = 'LOGIN::SET_EMAIL';
+export const SET_PASSWORD = 'LOGIN::SET_PASSWORD';
+export const SET_REMEMBER = 'LOGIN::SET_REMEMBER';
+export const CLEAR_INPUTS = 'LOGIN::CLEAR_INPUTS';
+export const SET_ERRORS = 'LOGIN::SET_ERRORS';
+export const SET_LOADING = 'LOGIN::SET_LOADING';

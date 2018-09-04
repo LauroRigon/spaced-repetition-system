@@ -1,0 +1,12 @@
+.verification-message {
+  position: relative;
+  text-align: center;
+  background-color:wheat;
+  width: 100%;
+  z-index: 500;
+}
+
+.verification-message .close.icon {
+  float: right;
+  cursor: pointer;
+}
