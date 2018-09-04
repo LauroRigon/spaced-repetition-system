@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Repositories\User;
+namespace App\Repositories;
 
 use App\Models\PasswordReset;
 use App\Models\UserVerification;
-use App\Repositories\BaseRepository;
+use App\Repositories\Support\BaseRepository;
 use App\Models\User;
 use Carbon\Carbon;
 

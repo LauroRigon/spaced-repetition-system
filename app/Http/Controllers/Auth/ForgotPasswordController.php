@@ -4,8 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Mail\ResetPasswordToken;
 use App\Models\User;
-use App\Repositories\User\PasswordResetsRepository;
-use App\Repositories\User\UsersRepository;
+use App\Repositories\UsersRepository;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;

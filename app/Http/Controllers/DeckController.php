@@ -3,10 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Models\Deck;
+use App\Repositories\DecksRepository;
 use Illuminate\Http\Request;
 
 class DeckController extends Controller
 {
+    protected $decksRepository;
+
+    public function __construct()
+    {
+        $this->decksRepository = new DecksRepository();
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -35,7 +43,9 @@ class DeckController extends Controller
      */
     public function store(Request $request)
     {
-        $this->authorize('create', Deck::class);
+        $user = $request->user();
+
+
     }
 
     /**

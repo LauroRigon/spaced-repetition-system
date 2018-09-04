@@ -10,15 +10,6 @@ use Illuminate\Support\Facades\Auth;
 class LoginControllerTest extends TestCase
 {
     use WithoutMiddleware;
-    /**
-     * Get the guard to be used during authentication.
-     *
-     * @return \Illuminate\Contracts\Auth\Guard
-     */
-    public function guard()
-    {
-        return Auth::guard();
-    }
 
     /**
      * Testa fazer login
