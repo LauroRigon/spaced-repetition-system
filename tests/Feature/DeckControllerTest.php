@@ -28,7 +28,7 @@ class DeckControllerTest extends TestCase
         ];
 
         $response = $this->withHeader('Authorization', "Bearer $authToken")->json('POST','api/decks', $deck_data);
-
         $response->assertStatus(201);
+
     }
 }

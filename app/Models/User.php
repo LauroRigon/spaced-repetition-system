@@ -67,12 +67,21 @@ class User extends Authenticatable implements JWTSubject
     }
 
     /**
-     * Um user pode ser cadastrado com mais de um deck publicos ou nao
+     * Retorna os decks que o usuário está usando, publicos ou não
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function decks()
+    public function usesDecks()
     {
-        return $this->belongsToMany(Deck::class)->withPivot('folder_directory');
+        return $this->belongsToMany(Deck::class)->withTimestamps()->withPivot('folder_directory');
+    }
+
+    /**
+     * Retorna os decks criados pelo usuário
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function originalDecks()
+    {
+        return $this->hasMany(Deck::class, 'creator_id');
     }
 
     /**

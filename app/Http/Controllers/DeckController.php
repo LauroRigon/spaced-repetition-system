@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+
+use App\Http\Controllers\Support\APIController;
+use App\Http\Requests\Deck\StoreDeck;
 use App\Models\Deck;
 use App\Repositories\DecksRepository;
 use Illuminate\Http\Request;
 
-class DeckController extends Controller
+class DeckController extends APIController
 {
     protected $decksRepository;
 
@@ -41,11 +44,22 @@ class DeckController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreDeck $request)
     {
+        $data = $request->only('name', 'description', 'folder');
+
         $user = $request->user();
 
+        $deck = $this->decksRepository->create([
+            'name' => $data['name'],
+            'description' => $data['description'],
+            'creator_id' => $user->id
+        ]);
 
+        $folder = array_key_exists('folder', $data) ? $data['folder'] : null;
+        $this->decksRepository->storeDeckUsedByUser($deck, $user, $folder);
+
+        return $this->respondWithSuccess('Deck criado com sucesso!', 201);
     }
 
     /**
