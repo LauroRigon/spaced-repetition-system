@@ -16,14 +16,26 @@ use Illuminate\Http\Request;
 Route::post('register', 'Auth\RegisterController@register');
 Route::post('login', 'Auth\LoginController@login');
 
-Route::middleware(['api', 'jwt.auth'])->group(function() {
+Route::middleware(['api', 'refreshExpiredToken'])->group(function() {
     Route::get('check', 'Auth\LoginController@check');
     Route::get('logout', 'Auth\LoginController@logout');
     Route::get('sendVerificationLink', 'Auth\RegisterController@reSendVerificationLink');
 
     Route::prefix('decks')->group(function() {
         Route::post('/', 'DeckController@store');
+        Route::get('/', 'DeckController@myUsedDecks');
+        Route::get('/{deck}', 'DeckController@show');
+        Route::delete('/{deck}', 'DeckController@destroy');
+        Route::put('/{deck}', 'DeckController@update');
+
+        Route::prefix('configs')->group(function() {
+            Route::get('/myConfigs', 'DeckConfigController@myDeckConfigs');
+            Route::post('/', 'DeckConfigController@store');
+            Route::put('/{config}', 'DeckConfigController@update');
+            Route::delete('/{config}', 'DeckConfigController@destroy');
+        });
     });
+
 
 
     Route::get('test', function(){

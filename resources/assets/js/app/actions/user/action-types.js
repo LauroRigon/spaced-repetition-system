@@ -1,2 +1,4 @@
 export const USER_LOGGED_IN = 'USER::USER_LOGGED_IN';
 export const USER_LOGGED_OUT = 'USER::USER_LOGGED_OUT';
+
+export const SET_TOKEN = 'USER::SET_TOKEN';

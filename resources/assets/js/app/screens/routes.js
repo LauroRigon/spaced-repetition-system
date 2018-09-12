@@ -7,8 +7,10 @@ import Home from './App/Home';
 import Register from './Auth/Register';
 import PrivateRoute from './routeRules/PrivateRoute';
 import OnlyGuestRoute from './routeRules/OnlyGuestRoute';
-import PasswordRecovery from './Auth/PasswordRecovery/PasswordRecovery';
 import Error404 from '../components/Errors/Error404/Error404';
+import DecksContainer from './App/Decks/DecksContainer';
+import ViewDecksContainer from './App/Decks/View/ViewDecksContainer';
+import DeckConfigsContainer from './App/DeckConfigs/DeckConfigsContainer';
 
 export default () => (
   <HashRouter>
@@ -36,9 +38,13 @@ export default () => (
           <AppParent>
             <Switch>
               <Route path={`${match.url}/`} exact component={Home} />
-              <Route path={`${match.url}test`} component={Login} />
-              <Route component={Error404}/>
               
+              <Route path={`${match.url}decks`} exact component={DecksContainer} />
+              <Route path={`${match.url}decks/:id`} component={ViewDecksContainer} />
+
+              <Route path={`${match.url}decks-configs`} exact component={DeckConfigsContainer} />
+
+              <Route component={Error404}/>              
             </Switch>
 
           </AppParent>

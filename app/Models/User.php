@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\DeckConfig;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -72,7 +73,7 @@ class User extends Authenticatable implements JWTSubject
      */
     public function usesDecks()
     {
-        return $this->belongsToMany(Deck::class)->withTimestamps()->withPivot('folder_directory');
+        return $this->belongsToMany(Deck::class)->withTimestamps()->withPivot('folder', 'deck_config_id');
     }
 
     /**
@@ -97,4 +98,17 @@ class User extends Authenticatable implements JWTSubject
 
         return false;
     }
+
+    public function deckConfigs()
+    {
+        return $this->hasMany(DeckConfig::class);
+    }
+
+    /*### MUTATORS ###*/
+
+    public function setNameAttribute($value)
+    {
+        $this->attributes['name'] = ucwords($value);
+    }
+
 }

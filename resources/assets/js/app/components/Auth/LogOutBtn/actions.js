@@ -11,7 +11,7 @@ export function doLogout() {
                 dispatch(userLoggedOut());
             })
             .catch(error => {
-              console.log(error.response)
+              dispatch(userLoggedOut());
             })
     };
 }

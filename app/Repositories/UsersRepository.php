@@ -20,7 +20,7 @@ class UsersRepository extends BaseRepository
      */
     public function createVerification(User $user, $size = 30)
     {
-        return $user->userVerification()->create(['token' => str_random($size)])->first();
+        return $user->userVerification()->create(['token' => str_random($size)]);
     }
 
     /**
@@ -30,7 +30,13 @@ class UsersRepository extends BaseRepository
      */
     public function getUserByVerificationToken($token)
     {
-        return UserVerification::where('token', $token)->first()->user;
+        try {
+            $user = UserVerification::where('token', $token)->first()->user;
+        } catch (\Exception $e){
+            return false;
+        }
+
+        return $user;
     }
 
     /**

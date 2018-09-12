@@ -1,8 +1,8 @@
 import React from 'react';
 import './index.css';
 
-const VerificationMessage = ({ show, handleClose }) => {
-  if (!show) {
+const VerificationMessage = ({ is_verified, closed, handleClose }) => {
+  if (!is_verified || closed) {
     return null;
   }
 

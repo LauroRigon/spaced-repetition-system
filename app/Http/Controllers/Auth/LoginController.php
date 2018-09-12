@@ -79,7 +79,7 @@ class LoginController extends BaseAuthController
             ], 422);
         }
 
-        $authToken = $this->guard()->refresh();
+        //$authToken = $this->guard()->refresh();
         $user = $this->guard()->user();
 
         if($user && $authToken){

@@ -22,6 +22,8 @@ class CreateDecksTable extends Migration
             $table->integer('creator_id')->unsigned();
             $table->timestamps();
 
+            $table->softDeletes();
+
             $table->foreign('creator_id')->references('id')->on('users');
         });
     }

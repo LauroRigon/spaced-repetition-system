@@ -5,6 +5,8 @@ import uiReducer from './ui';
 import loginReducer from '../components/Auth/Login/reducer';
 import registerReducer from '../components/Auth/Register/reducer';
 import PasswordRecoveryReducer from '../screens/Auth/PasswordRecovery/reducer';
+import DecksReducer from '../screens/App/Decks/reducer';
+import DeckConfigReducer from '../screens/App/DeckConfigs/reducer';
 import { reducer as toastrReducer } from 'react-redux-toastr';
 
 const rootReducer = combineReducers({
@@ -14,8 +16,18 @@ const rootReducer = combineReducers({
     register: registerReducer,
     passwordRecovery: PasswordRecoveryReducer,
   }),
+  app: combineReducers({
+    decks: DecksReducer,
+    deckConfigs: DeckConfigReducer
+  }),
   toastr: toastrReducer,
-  ui: uiReducer
+  ui: uiReducer,
 });
 
-export default rootReducer;
+export default (state, action) => (
+  action.type === 'RESET_STATE'
+      ? rootReducer(undefined, action)
+      : rootReducer(state, action)
+)
+
+//export default rootReducer;

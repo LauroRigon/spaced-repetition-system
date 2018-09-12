@@ -19,5 +19,5 @@ Route::get('/', function () {
 
 Route::view('/app', 'app.auth');
 
-Route::get('/verify/{verification_code}', 'Auth\RegisterController@verifyUser')->name('email.verify');
+Route::get('/verify/{verification_code?}', 'Auth\RegisterController@verifyUser')->name('email.verify');
 //Route::get('/app/#/auth/password/reset/{reset_token}')->name('password.reset');
