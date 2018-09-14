@@ -95,8 +95,8 @@ export function clearError (errorName) {
 export function submitForm (method, data, dispatchOnSuccess = null, id = null) {
   return dispatch => {
     dispatch(setFormLoading(true))
-
-    api[method]('decks/configs/' + (id || ''), data)
+    const updataPath = id ? `/${id}` : ''
+    api[method]('decks/configs' + updataPath, data)
       .then(({ data }) => {
         // dispatch fetch list
         
@@ -120,8 +120,7 @@ export function submitForm (method, data, dispatchOnSuccess = null, id = null) {
 
 export function submitDeleteRequest(id, dispatchOnSuccess = null) {
   return dispatch => {
-    const updataPath = id ? `/${id}` : ''
-    api.delete('decks/configs' + updataPath)
+    api.delete('decks/configs/' + id)
     .then(({data}) => {
       toastr.success('Tudo certo!', (data.message))
       if (dispatchOnSuccess != null) {
