@@ -110,8 +110,8 @@ export function clearError (errorName) {
 export function submitForm (method, data, dispatchOnSuccess = null, id = null) {
   return dispatch => {
     dispatch(setFormLoading(true))
-
-    api[method]('decks/' + (id || ''), data)
+    const updatePath = id ? `/${id}` : '';
+    api[method]('decks' + updatePath, data)
       .then(({ data }) => {
         // dispatch fetch list
         
