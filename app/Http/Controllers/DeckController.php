@@ -48,19 +48,16 @@ class DeckController extends APIController
      */
     public function store(StoreDeck $request)
     {
-        $data = $request->only('name', 'description', 'folder', 'deck_config_id');
+        $toDeck = $request->only('name', 'description');
+        $toPivot = $request->only('folder', 'deck_config_id');
 
         $user = $request->user();
 
         $deck = $this->decksRepository->create([
-            'name' => $data['name'],
-            'description' => $data['description'],
+            'name' => $toDeck['name'],
+            'description' => $toDeck['description'],
             'creator_id' => $user->id
         ]);
-
-        $toPivot = [];
-        array_key_exists('folder', $data) ? $toPivot['folder'] = $data['folder'] : $toPivot['folder'] = '/';
-        array_key_exists('deck_config_id', $data) ? $toPivot['deck_config_id'] = $data['deck_config_id'] : null;
 
         $this->decksRepository->storeDeckUsedByUser($deck, $user, $toPivot);
 
@@ -80,18 +77,19 @@ class DeckController extends APIController
         if (!$user->can('update', Deck::find($deck))) {
             return $this->respondWithForbiddenError();
         }
-        $data = $request->only('name', 'description', 'is_public', 'folder', 'deck_config_id');
+        $toDeck = $request->only('name', 'description', 'is_public');
+        $toPivot = $request->only('folder', 'deck_config_id');
 
         $success = $this->decksRepository->update([
-            'name' => $data['name'],
-            'description' => $data['description'],
-            'is_public' => $data['is_public']
+            'name' => $toDeck['name'],
+            'description' => $toDeck['description'],
+            'is_public' => $toDeck['is_public']
         ], $deck);
 
         if ($success) {
-            $toPivot = [];
-            array_key_exists('folder', $data) ? $toPivot['folder'] = $data['folder'] : $toPivot['folder'] = '/';
-            array_key_exists('deck_config_id', $data) ? $toPivot['deck_config_id'] = $data['deck_config_id'] : null;
+//            $toPivot = [];
+//            array_key_exists('folder', $data) ? $toPivot['folder'] = $data['folder'] : $toPivot['folder'] = '/';
+//            (array_key_exists('deck_config_id', $data) && $data['deck_config_id']) ? $toPivot['deck_config_id'] = $data['deck_config_id'] : null;
 
             $this->decksRepository->updatePivot($deck, $user->id, $toPivot);
         }

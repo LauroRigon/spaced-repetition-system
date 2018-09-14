@@ -71396,7 +71396,7 @@ function form() {
 
     case __WEBPACK_IMPORTED_MODULE_0__action_types__["c" /* SET_CONFIG_FORM */]:
       return _extends({}, state, {
-        data: _extends({}, state.data, { deck_config_id: action.payload })
+        data: _extends({}, state.data, { deck_config_id: action.payload ? action.payload : 0 })
       });
 
     case __WEBPACK_IMPORTED_MODULE_0__action_types__["m" /* TOGGLE_IS_PUBLIC */]:

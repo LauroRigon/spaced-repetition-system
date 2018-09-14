@@ -46,8 +46,16 @@ class DecksRepository extends BaseRepository
      */
     public function updatePivot($deck_id, $user_id, $data)
     {
+        if(!$data['folder']) {
+            $data['folder'] = '/';
+        }
+
+        if($data['deck_config_id'] == 0) {
+            $data['deck_config_id'] = null;
+        }
+        //dd($data);
         $deck = $this->findById($deck_id);
-        //dd($data, $user_id, $deck_id);
+
         return $deck->usersUses()->where('user_id', $user_id)->first()->pivot->update($data);
     }
 }

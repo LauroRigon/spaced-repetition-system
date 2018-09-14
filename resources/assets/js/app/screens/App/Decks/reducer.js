@@ -44,7 +44,7 @@ function form (state = formInitialState, action) {
     case actions.SET_CONFIG_FORM:
       return {
         ...state,
-        data: { ...state.data, deck_config_id: action.payload }
+        data: { ...state.data, deck_config_id: (action.payload) ? action.payload : 0 }
       }
     
     case actions.TOGGLE_IS_PUBLIC:
