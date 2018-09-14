@@ -120,7 +120,8 @@ export function submitForm (method, data, dispatchOnSuccess = null, id = null) {
 
 export function submitDeleteRequest(id, dispatchOnSuccess = null) {
   return dispatch => {
-    api.delete('decks/configs/' + id)
+    const updataPath = id ? `/${id}` : ''
+    api.delete('decks/configs' + updataPath)
     .then(({data}) => {
       toastr.success('Tudo certo!', (data.message))
       if (dispatchOnSuccess != null) {
