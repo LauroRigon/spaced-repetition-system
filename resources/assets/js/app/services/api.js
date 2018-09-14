@@ -6,7 +6,7 @@ import { userLoggedOut, setToken } from '../actions/user'
 const token = getCurrentToken()
 
 const api = axios.create({
-  baseURL: '/api/',
+  baseURL: 'https://floating-garden-78421.herokuapp.com/api/',
   headers: {
     Accept: 'application/json',
     'Content-Type': 'application/json'
