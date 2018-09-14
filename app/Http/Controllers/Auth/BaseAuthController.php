@@ -6,13 +6,12 @@
  * Time: 14:24
  */
 
-namespace app\Http\Controllers\Auth;
+namespace App\Http\Controllers\Auth;
 
-
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Support\APIController;
 use Illuminate\Support\Facades\Auth;
 
-class BaseAuthController extends Controller
+class BaseAuthController extends APIController
 {
 
     /**

@@ -2,84 +2,123 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Deck;
-use Illuminate\Http\Request;
 
-class DeckController extends Controller
+use App\Http\Controllers\Support\APIController;
+use App\Http\Requests\Deck\StoreDeck;
+use App\Http\Requests\Deck\UpdateDeck;
+use App\Models\Deck;
+use App\Repositories\DecksRepository;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+class DeckController extends APIController
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    protected $decksRepository;
+
+    public function __construct()
     {
-        //
+        $this->decksRepository = new DecksRepository();
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function show(Request $request, $deck)
     {
+        $user = $request->user();
+        $deck = $this->decksRepository->findDeckWithPivot($deck, $user->id);
 
+        if ($user->cannot('view', $deck)) {
+            return $this->respondWithForbiddenError("Você não tem permissão para acessar esse deck");
+        }
+
+        return $this->respondWithData($deck);
+    }
+
+    public function myUsedDecks(Request $request)
+    {
+        $user = $request->user();
+        $decks = $this->decksRepository->getAllUsedDecksByUser($user);
+
+        return $this->respondWithData($decks);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(Request $request)
+    public function store(StoreDeck $request)
     {
-        $this->authorize('create', Deck::class);
-    }
+        $toDeck = $request->only('name', 'description');
+        $toPivot = $request->only('folder', 'deck_config_id');
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
+        $user = $request->user();
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        $deck = $this->decksRepository->create([
+            'name' => $toDeck['name'],
+            'description' => $toDeck['description'],
+            'creator_id' => $user->id
+        ]);
+
+        $this->decksRepository->storeDeckUsedByUser($deck, $user, $toPivot);
+
+        return $this->respondWithSuccess('Deck criado com sucesso!', 201);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param  \Illuminate\Http\Request $request
+     * @param  int $id
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(Request $request, $id)
+    public function update(UpdateDeck $request, $deck)
     {
-        //
+        $user = $request->user();
+        if (!$user->can('update', Deck::find($deck))) {
+            return $this->respondWithForbiddenError();
+        }
+        $toDeck = $request->only('name', 'description', 'is_public');
+        $toPivot = $request->only('folder', 'deck_config_id');
+
+        $success = $this->decksRepository->update([
+            'name' => $toDeck['name'],
+            'description' => $toDeck['description'],
+            'is_public' => $toDeck['is_public']
+        ], $deck);
+
+        if ($success) {
+//            $toPivot = [];
+//            array_key_exists('folder', $data) ? $toPivot['folder'] = $data['folder'] : $toPivot['folder'] = '/';
+//            (array_key_exists('deck_config_id', $data) && $data['deck_config_id']) ? $toPivot['deck_config_id'] = $data['deck_config_id'] : null;
+
+            $this->decksRepository->updatePivot($deck, $user->id, $toPivot);
+        }
+
+        return $this->respondWithSuccess('Deck atualizado com sucesso!');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param  int $id
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy($id)
+    public function destroy($deck)
     {
-        //
+        $deck = Deck::find($deck);
+        $user = Auth::user();
+
+        if (!$user->can('delete', $deck)) {
+            return $this->respondWithForbiddenError('Você não tem permissão para excluir esse deck.');
+        }
+
+        $this->decksRepository->disassociateUserFromDeck($user->id, $deck);
+
+        //degundo parametro eh de forceDelete para realmente deletar por completo o deck se esse for privado
+        $shouldBeRealDeleted = !$deck->is_public;
+        $this->decksRepository->delete($deck->id, $shouldBeRealDeleted);
+
+        return $this->respondWithSuccess('Deck excluído com sucesso!');
+
     }
 }

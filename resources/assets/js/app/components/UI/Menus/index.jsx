@@ -11,7 +11,11 @@ const Menus = () => {
       </Menu.Item>
       <Menu.Item >
         <Icon name='home' />
-        <NavLink to='/test' activeClassName="selected"> test </NavLink>
+        <NavLink to='/decks' activeClassName="selected"> Decks </NavLink>
+      </Menu.Item>
+      <Menu.Item >
+        <Icon name='cog' />
+        <NavLink to='/decks-configs' activeClassName="selected"> Configurações </NavLink>
       </Menu.Item>
     </React.Fragment>
   )

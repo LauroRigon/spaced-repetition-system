@@ -85,6 +85,10 @@ class RegisterControllerTest extends TestCase
         $response = $this->get("verify/$verification->token");
 
         $response->assertSee('Conta verificada com sucesso!');
+
+        $user = $verification->user;
+        $user->is_verified = 1;
+        $this->assertDatabaseHas('users', $user->toArray());
     }
 
     /**

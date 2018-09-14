@@ -19,10 +19,12 @@ class CreateDecksTable extends Migration
             $table->string('name');
             $table->mediumText('description')->nullable();
             $table->boolean('is_public')->default(0);
-            $table->integer('user_id')->unsigned();
+            $table->integer('creator_id')->unsigned();
             $table->timestamps();
 
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->softDeletes();
+
+            $table->foreign('creator_id')->references('id')->on('users');
         });
     }
 

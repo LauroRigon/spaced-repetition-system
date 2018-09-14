@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repositories;
+namespace App\Repositories\Support;
 
 
 /**
@@ -84,8 +84,11 @@ abstract class BaseRepository implements RepositoryInterface
      * @param $id
      * @return Bool
      */
-    public function delete($id)
+    public function delete($id, $forceDelete = false)
     {
+        if($forceDelete){
+            return $this->query->findOrFail($id)->forceDelete();
+        }
         return $this->query->findOrFail($id)->delete();
     }
 

@@ -5,14 +5,14 @@ namespace App\Http\Controllers\Auth;
 use App\Mail\UserVerificationToken;
 use App\Models\User;
 use App\Http\Controllers\Controller;
-use App\Repositories\User\UsersRepository;
-use App\Repositories\User\UserVerificationsRepository;
+use App\Repositories\UsersRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use JWTAuth;
+use Tymon\JWTAuth\Exceptions\JWTException;
 
 class RegisterController extends BaseAuthController
 {
@@ -148,20 +148,27 @@ class RegisterController extends BaseAuthController
      * @param  string $verification_code
      * @return \Illuminate\Http\JsonResponse
      */
-    public function verifyUser(Request $request, $verification_code)
+    public function verifyUser(Request $request, $verification_code = '')
     {
-        $user = $this->usersRepository->getUserByVerificationToken($verification_code);
+        $user = ($verification_code) ? $this->usersRepository->getUserByVerificationToken($verification_code) : null;
 
         //conseguiu achar usuario a partir do token
-        if(!is_null($user)) {
+        if($user) {
 
-            $this->usersRepository->update(['is_verified' => 1], $user->id);
+            $success = $this->usersRepository->update(['is_verified' => 1], $user->id);
 
-            $this->usersRepository->deleteUserVerification($user);
+            if($success) {
+                $this->usersRepository->deleteUserVerification($user);
+
+                return view('auth.verify_email')->with([
+                    'color' => 'success',
+                    'message' => 'Conta verificada com sucesso!'
+                ]);
+            }
 
             return view('auth.verify_email')->with([
-                'color' => 'success',
-                'message' => 'Conta verificada com sucesso!'
+                'color' => 'error',
+                'message' => 'Ocorreu um erro ao tentar verificar seu email!'
             ]);
         }
 

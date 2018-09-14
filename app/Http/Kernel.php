@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\RefreshExpiredToken;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -60,7 +61,8 @@ class Kernel extends HttpKernel
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
 
-        'jwt.auth' => 'Tymon\JWTAuth\Middleware\GetUserFromToken',
+        'jwt.auth' => \Tymon\JWTAuth\Http\Middleware\Authenticate::class,
         'jwt.refresh' => 'Tymon\JWTAuth\Middleware\RefreshToken',
+        'refreshExpiredToken' => RefreshExpiredToken::class
     ];
 }
