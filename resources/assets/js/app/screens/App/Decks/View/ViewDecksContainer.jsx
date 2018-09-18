@@ -3,23 +3,16 @@ import { withRouter } from 'react-router-dom'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
+import { SubmissionError } from 'redux-form'
 import { fetchDeck, sendDeleteDeck } from './actions'
-import { Segment, Grid, Header, Button, Icon, Confirm, Modal } from 'semantic-ui-react'
+import { Grid } from 'semantic-ui-react'
 import DeckView from '../../../../components/Decks/View'
 import ViewActions from '../../../../components/Decks/View/ViewActions'
 
-import {
-  setName,
-  setDesc,
-  setFolder,
-  setConfig,
-  setIsPublic,
-  toggleIsPublic,
-  submitForm,
-  setModalOpen,
-} from '../actions'
+import { submitForm, setModalOpen } from '../actions'
 import { fetchDeckConfigList } from '../../DeckConfigs/actions'
-import DecksForm from '../../../../components/Decks/Form';
+import FormModal from '../../../../components/Decks/FormModal'
+// import DecksFormModal from '../../../../components/Decks/FormModal';
 
 class ViewDecksContainer extends Component {
   constructor (props) {
@@ -31,13 +24,10 @@ class ViewDecksContainer extends Component {
     this.closeDeleteConfirm = this.closeDeleteConfirm.bind(this)
     this.handleOpenDeleteConfirm = this.handleOpenDeleteConfirm.bind(this)
     this.handleDeleteDeck = this.handleDeleteDeck.bind(this)
-    
-    /*MODAL*/
-    this.handleCreateModalOpen = this.handleCreateModalOpen.bind(this)
+
+    /* MODAL */
+    this.handleEditModalOpen = this.handleEditModalOpen.bind(this)
     this.handleModalClose = this.handleModalClose.bind(this)
-    this.handleNameChange = this.handleNameChange.bind(this)
-    this.handleDescChange = this.handleDescChange.bind(this)
-    this.handleFolderChange = this.handleFolderChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
     this.handleFetchDeck = this.handleFetchDeck.bind(this)
   }
@@ -47,7 +37,7 @@ class ViewDecksContainer extends Component {
     this.handleFetchDeck()
   }
 
-  handleFetchDeck() {
+  handleFetchDeck () {
     const deck_id = this.props.match.params.id
     const history = this.props.history
 
@@ -71,78 +61,48 @@ class ViewDecksContainer extends Component {
   /**
    * EDIT MODAL
    * */
-  handleCreateModalOpen () {
+  handleEditModalOpen () {
     this.props.setModalOpen(true)
-    this.handleNameChange(this.props.deck.name)
-    this.handleDescChange(this.props.deck.description)
-    this.handleFolderChange(this.props.deck.pivot.folder)
-    this.props.setConfig(this.props.deck.pivot.deck_config_id)
-    this.props.setIsPublic(this.props.deck.is_public)
   }
 
   handleModalClose () {
     this.props.setModalOpen(false)
   }
 
-  handleNameChange (value) {
-    this.props.setName(value)
-  }
-
-  handleDescChange (value) {
-    this.props.setDesc(value)
-  }
-
-  handleFolderChange (value) {
-    this.props.setFolder(value)
-  }
-
-  handleSubmit (method, data) {
+  handleSubmit (values) {
     const deck_id = this.props.deck.id
-
-    
     const onSuccessFetchAgain = this.handleFetchDeck
-    this.props.submitForm(method.toLowerCase(), data, onSuccessFetchAgain, deck_id)
+    this.props.submitForm('put', values, onSuccessFetchAgain, deck_id)
   }
-
 
   render () {
-    const { deck, auth_user_id, form, ui, configList } = this.props
+    const { deck, auth_user_id, ui, configList } = this.props
+    const initialFormValues = {
+      name: deck.name,
+      description: deck.description,
+      folder: deck.pivot && deck.pivot.folder,
+      deck_config_id: deck.pivot && deck.pivot.deck_config_id,
+      is_public: deck.is_public
+    }
 
+    //só renderiza o form quando tiver deck fetchado pra q o form inicialize com os dados corretos!
+    const renderFormModal = !Object.keys(deck).length ? null : (
+      <FormModal
+        modalOpen={ui.modalOpen}
+        handleModalClose={this.handleModalClose}
+        isEdit
+        initialValues={initialFormValues}
+        icon='refresh'
+        header='Editar deck'
+        buttonLabel='Atualizar'
+        loading={ui.isSubmitting}
+        configList={configList}
+        onSubmit={this.handleSubmit}
+      />
+    )
     return (
       <React.Fragment>
-        <Modal
-          open={ui.modalOpen}
-          onClose={this.handleModalClose}
-          size='small'
-          closeIcon='close'
-          className='animated zoomIn'
-        >
-          <Modal.Content>
-            <DecksForm
-              isPublicField
-              icon='refresh'
-              header='Editar deck'
-              buttonLabel='Atualizar'
-              loading={form.isLoading}
-              errors={form.errors}
-              nameValue={form.data.name}
-              handleNameChange={this.handleNameChange}
-              descValue={form.data.description}
-              handleDescChange={this.handleDescChange}
-              folderValue={form.data.folder}
-              handleFolderChange={this.handleFolderChange}
-
-              configValue={form.data.deck_config_id}
-              handleConfigChange={this.props.setConfig}
-              configList={configList}
-
-              isPublicValue={form.data.is_public}
-              handleIsPublicChange={this.props.toggleIsPublic}
-              onSubmit={e => this.handleSubmit('PUT', form.data)}
-            />
-          </Modal.Content>
-        </Modal>
-
+        {renderFormModal}
         <Grid columns={2} stackable padded='vertically'>
           <Grid.Column largeScreen={12} computer={12} tablet={11}>
             <DeckView deck={deck} />
@@ -155,7 +115,7 @@ class ViewDecksContainer extends Component {
               handleDeleteDeck={this.handleDeleteDeck}
               handleOpenDeleteConfirm={this.handleOpenDeleteConfirm}
               closeDeleteConfirm={this.closeDeleteConfirm}
-              handleOpenEditModal={this.handleCreateModalOpen}
+              handleOpenEditModal={this.handleEditModalOpen}
             />
           </Grid.Column>
         </Grid>
@@ -167,7 +127,6 @@ class ViewDecksContainer extends Component {
 const mapStateToProps = state => {
   return {
     auth_user_id: state.user.account.id,
-    form: state.app.decks.form,
     ui: state.app.decks.ui,
     deck: state.app.decks.view.deck,
     configList: state.app.deckConfigs.configList
@@ -179,12 +138,6 @@ const mapDispatchToProps = dispatch => {
     {
       fetchDeck,
       sendDeleteDeck,
-      setName,
-      setDesc,
-      setFolder,
-      setConfig,
-      setIsPublic,
-      toggleIsPublic,
       submitForm,
       setModalOpen,
 

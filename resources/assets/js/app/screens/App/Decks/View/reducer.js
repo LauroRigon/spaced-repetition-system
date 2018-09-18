@@ -7,7 +7,9 @@ const initialState = {
 export default (state = initialState, action) => {
   switch (action.type) {
     case actions.SET_DECK:
-      return { ...state, deck: action.payload }
+      var newDeck = action.payload
+      newDeck.pivot.deck_config_id = newDeck.pivot.deck_config_id == null ? 0 : newDeck.pivot.deck_config_id
+      return { ...state, deck: newDeck }
 
     default:
       return state

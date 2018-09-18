@@ -3,7 +3,7 @@ import store from '../store/configureStore';
 
 import { userLoggedOut } from '../actions/user';
 
-const token = getCurrentToken();
+//const token = getCurrentToken();
 
 const api = axios.create({
     baseURL: '/api/',

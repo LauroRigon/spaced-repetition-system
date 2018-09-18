@@ -4,7 +4,6 @@ import { Header } from 'semantic-ui-react';
 import AuthLogOutBtn from '../../Auth/LogOutBtn/LogOutBtn';
 import './index.css';
 import SideDrawerButton from '../SideDrawer/SideDrawerButton';
-import VerificationMessage from '../VerificationMessage';
 
 const AppHeader = ({ label, paddingLeft, handleSideDrawerClick }) => {
 

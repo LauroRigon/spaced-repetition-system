@@ -2,16 +2,12 @@ import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Button, Modal, Grid, Segment, Header, Icon } from 'semantic-ui-react'
-import DecksForm from '../../../components/Decks/Form'
-
+import FormModal from '../../../components/Decks/FormModal'
+import { SubmissionError } from 'redux-form'
 import {
-  setName,
-  setDesc,
-  setFolder,
-  setConfig,
   submitForm,
   setModalOpen,
-  fetchDeckList
+  fetchDeckList,
 } from './actions'
 import { fetchDeckConfigList } from '../DeckConfigs/actions'
 
@@ -23,20 +19,14 @@ class Decks extends Component {
 
     this.handleModalOpen = this.handleModalOpen.bind(this)
     this.handleModalClose = this.handleModalClose.bind(this)
-    this.handleNameChange = this.handleNameChange.bind(this)
-    this.handleDescChange = this.handleDescChange.bind(this)
-    this.handleFolderChange = this.handleFolderChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
   }
 
   componentWillMount () {
     this.props.fetchDeckConfigList()
-    this.fechList()
+    this.props.fetchDeckList()
   }
 
-  /**
-   * Formulario
-   */
   handleModalOpen () {
     this.props.setModalOpen(true)
   }
@@ -45,73 +35,36 @@ class Decks extends Component {
     this.props.setModalOpen(false)
   }
 
-  handleNameChange (value) {
-    this.props.setName(value)
-  }
-
-  handleDescChange (value) {
-    this.props.setDesc(value)
-  }
-
-  handleFolderChange (value) {
-    this.props.setFolder(value)
-  }
-
-  handleSubmit (method, data, ) {
-    const successFetchAgain = this.props.fetchDeckList
-    this.props.submitForm(method.toLowerCase(), data, successFetchAgain)
-  }
-
-  /**
-   * Lista de decks
-   */
-
-  fechList () {
-    this.props.fetchDeckList()
+  handleSubmit (values) {
+    const onSuccessFetchAgain = this.props.fetchDeckList
+    
+    this.props.submitForm('post', values, onSuccessFetchAgain)  
+    
   }
 
   render () {
-    const { form, ui, decks, configList } = this.props
+    const { ui, decks, configList } = this.props
 
     return (
       <React.Fragment>
         <Grid padded='vertically'>
-            <Modal
-              open={ui.modalOpen}
-              onClose={this.handleModalClose}
-              size='small'
-              closeIcon='close'
-              className='animated zoomIn'
-            >
-              <Modal.Content>
-                <DecksForm
-                  icon='plus'
-                  header='Criar deck'
-                  buttonLabel='Criar'
-                  loading={form.isLoading}
-                  errors={form.errors}
-                  nameValue={form.data.name}
-                  handleNameChange={this.handleNameChange}
-                  descValue={form.data.description}
-                  handleDescChange={this.handleDescChange}
-                  folderValue={form.data.folder}
-                  handleFolderChange={this.handleFolderChange}
-
-                  configValue={form.data.deck_config_id}
-                  handleConfigChange={this.props.setConfig}
-                  configList={configList}
-                  
-                  onSubmit={e => this.handleSubmit('POST', form.data)}
-                />
-              </Modal.Content>
-            </Modal>
+          <FormModal
+            modalOpen={ui.modalOpen}
+            handleModalClose={this.handleModalClose}
+            icon='plus'
+            header='Criar deck'
+            buttonLabel='Criar'
+            loading={ui.isSubmitting}
+            configList={configList}
+            onSubmit={this.handleSubmit}
+          />
 
           <Grid.Row columns={1}>
             <Grid.Column padded='horizontally' width={16}>
               <Header as='h2' attached='top'>
                 Seus decks
               </Header>
-              <Segment attached loading={ui.isFetching}>
+              <Segment attached loading={(ui.isFetching && !decks.length)}>
                 <Button
                   icon
                   labelPosition='left'
@@ -132,7 +85,6 @@ class Decks extends Component {
 
 const mapStateToProps = state => {
   return {
-    form: state.app.decks.form,
     list: state.app.decks.list,
     ui: state.app.decks.ui,
     decks: state.app.decks.decksList,
@@ -143,10 +95,6 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
-      setName,
-      setDesc,
-      setFolder,
-      setConfig,
       submitForm,
       setModalOpen,
       fetchDeckList,

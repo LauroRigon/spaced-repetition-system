@@ -1,103 +1,18 @@
 import * as actions from './action-types'
 import { toastr } from 'react-redux-toastr'
 import api from 'app/services/api'
-import Axios from 'axios'
+
+import { SubmissionError } from 'redux-form'
 
 /* ##########FORMULARIO############ */
-
-/**
- * Modifica o valor do campo name do formulario no state
- * @param {string} value
- */
-export function setName (value) {
-  return [
-    {
-      type: actions.SET_NAME_FORM,
-      payload: value
+export function setErrors(errors) {
+  return {
+    type: '@@redux-form/STOP_SUBMIT',
+    meta: {
+      form: 'deck'
     },
-    clearError('name')
-  ]
-}
-
-/**
- * Modifica o valor do campo description do formulario no state
- * @param {string} value
- */
-export function setDesc (value) {
-  return [
-    {
-      type: actions.SET_DESC_FORM,
-      payload: value || ''
-    },
-    clearError('description')
-  ]
-}
-
-/**
- * Modifica o valor do campo name do folder no state
- * @param {string} value
- */
-export function setFolder (value) {
-  return [
-    {
-      type: actions.SET_FOLDER_FORM,
-      payload: value || ''
-    },
-    clearError('folder')
-  ]
-}
-
-export function setConfig (value) {
-  return [
-    {
-      type: actions.SET_CONFIG_FORM,
-      payload: value
-    }
-  ]
-}
-
-export function setIsPublic (value) {
-  return [
-    {
-      type: actions.SET_IS_PUBLIC,
-      payload: value
-    }
-  ]
-}
-
-export function toggleIsPublic (value) {
-  return [
-    {
-      type: actions.TOGGLE_IS_PUBLIC,
-      payload: value
-    }
-  ]
-}
-
-export function clearForm () {
-  return {
-    type: actions.CLEAR_FORM
-  }
-}
-
-export function setFormLoading (value) {
-  return {
-    type: actions.SET_FORM_LOADING,
-    payload: value
-  }
-}
-
-export function setErrors (value) {
-  return {
-    type: actions.SET_ERRORS,
-    payload: value
-  }
-}
-
-export function clearError (errorName) {
-  return {
-    type: actions.CLEAR_ERROR,
-    payload: errorName
+    payload: {...errors},
+    error: true
   }
 }
 
@@ -109,25 +24,22 @@ export function clearError (errorName) {
  */
 export function submitForm (method, data, dispatchOnSuccess = null, id = null) {
   return dispatch => {
-    dispatch(setFormLoading(true))
+    dispatch(setIsSubmitting(true))
     const updatePath = id ? `/${id}` : '';
     api[method]('decks' + updatePath, data)
       .then(({ data }) => {
-        // dispatch fetch list
-        
         if (dispatchOnSuccess != null) {
           try {
             dispatch(dispatchOnSuccess())
           } catch (err) {}
         }
-        
-        dispatch([setFormLoading(false), setModalOpen(false), clearForm()])
+        dispatch([setModalOpen(false), setIsSubmitting(false)])
 
         toastr.success('Tudo certo!', data.message)
       })
       .catch(({ response }) => {
         if (response && (response.status == 422)) {
-          dispatch([setFormLoading(false), setErrors(response.data.errors)])
+          dispatch([setErrors(response.data.errors), setIsSubmitting(false)])
         }
       })
   }
@@ -140,13 +52,21 @@ export function submitForm (method, data, dispatchOnSuccess = null, id = null) {
  * @param {boolean} value
  */
 export function setModalOpen (value) {
-  return [
-    {
-      type: actions.SET_MODAL_CREATE,
+  return {
+      type: actions.SET_MODAL,
       payload: value
-    },
-    !value ? clearForm() : undefined
-  ]
+    }  
+}
+
+/**
+ * Define se esta submetendo um post (para o loading)
+ * @param {boolean} value
+ */
+export function setIsSubmitting(value) {
+  return {
+    type: actions.SET_SUBMITTING,
+    payload: value
+  }
 }
 
 /* ############DECK LIST ########### */
