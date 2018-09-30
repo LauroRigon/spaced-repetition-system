@@ -5,13 +5,16 @@ import { Header, Segment, Button, Confirm, Icon } from 'semantic-ui-react'
 import If from 'app/components/UI/If'
 
 const ViewActions = ({
-  authenticatedUserId,
-  deckCreatorId,
+  authenticatedUser,
+  deck,
   handleDeleteDeck,
   openDeleteConfirm,
   closeDeleteConfirm,
   handleOpenDeleteConfirm,
-  handleOpenEditModal
+  handleOpenEditModal,
+  handleOpenAddCardsModal,
+  handleOpenSubscribeModal,
+  handleUnsubscribeClick
 }) => {
   return (
     <React.Fragment>
@@ -19,15 +22,16 @@ const ViewActions = ({
         Ações
       </Header>
       <Segment attached>
-
-        <Button compact fluid primary>
-          Adicionar Card
-        </Button>
+        <If test={deck.creator_id == authenticatedUser.id}>
+          <Button compact fluid primary onClick={handleOpenAddCardsModal}>
+            Adicionar Card
+          </Button>
+        </If>
 
         <div className='ui section divider' />
-        <If test={authenticatedUserId == deckCreatorId}>
+        <If test={authenticatedUser.id == deck.creator_id}>
           <Button
-            style={{margin: '3px 0'}}
+            style={{ margin: '3px 0' }}
             compact
             fluid
             icon
@@ -58,10 +62,18 @@ const ViewActions = ({
           />
         </If>
 
-        <If test={authenticatedUserId != deckCreatorId}>
-          <Button basic color='red'>
-            Desinscrever-se
-          </Button>
+        <If test={authenticatedUser.id != deck.creator_id}>
+          <If test={deck.pivot}>
+            <Button basic color='red' onClick={handleUnsubscribeClick}>
+              Desinscrever-se
+            </Button>
+          </If>
+
+          <If test={!deck.pivot}>
+            <Button basic color='blue' fluid onClick={handleOpenSubscribeModal}>
+              Inscrever-se
+            </Button>
+          </If>
         </If>
       </Segment>
     </React.Fragment>

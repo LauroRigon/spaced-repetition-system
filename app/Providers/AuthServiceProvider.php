@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\DeckConfig;
+use App\Models\Card;
 use App\Models\Deck;
+use App\Policies\CardPolicy;
 use App\Policies\DeckConfigPolicy;
 use App\Policies\DeckPolicy;
 use Illuminate\Support\Facades\Gate;
@@ -19,7 +21,8 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
         'App\Model' => 'App\Policies\ModelPolicy',
         Deck::class => DeckPolicy::class,
-        DeckConfig::class => DeckConfigPolicy::class
+        DeckConfig::class => DeckConfigPolicy::class,
+        Card::class => CardPolicy::class
     ];
 
     /**

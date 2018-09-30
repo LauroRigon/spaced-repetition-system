@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Switch, Redirect, HashRouter } from 'react-router-dom';
+import { Route, Switch, Redirect, HashRouter,  } from 'react-router-dom';
 import AuthParent from './Auth/Parent';
 import Login from './Auth/Login';
 import AppParent from './App/Parent';
@@ -11,6 +11,7 @@ import Error404 from '../components/Errors/Error404/Error404';
 import DecksContainer from './App/Decks/DecksContainer';
 import ViewDecksContainer from './App/Decks/View/ViewDecksContainer';
 import DeckConfigsContainer from './App/DeckConfigs/DeckConfigsContainer';
+import PublicDecksContainer from './App/PublicDecks/PublicDecksContainer';
 
 export default () => (
   <HashRouter>
@@ -40,9 +41,15 @@ export default () => (
               <Route path={`${match.url}/`} exact component={Home} />
               
               <Route path={`${match.url}decks`} exact component={DecksContainer} />
-              <Route path={`${match.url}decks/:id`} component={ViewDecksContainer} />
+              <Route path={`${match.url}decks/:id`} component={(props) => (
+                <ViewDecksContainer key={props.match.params.id} {...props}/>
+              )} />
 
               <Route path={`${match.url}decks-configs`} exact component={DeckConfigsContainer} />
+
+              <Route path={`${match.url}public-decks`} exact component={(props) => (
+                <PublicDecksContainer key={props.location.search} {...props}/>
+              )} />
 
               <Route component={Error404}/>              
             </Switch>

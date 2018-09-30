@@ -2,7 +2,7 @@ import * as actions from './action-types'
 import api from 'app/services/api'
 import { saveState } from 'app/localStorage';
 
-import { setIsLoaded } from '../ui/index'
+import { setIsLoaded } from '../ui/settings'
 /*
 Espera-se:
 {

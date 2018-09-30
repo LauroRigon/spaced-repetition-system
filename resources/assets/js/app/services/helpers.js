@@ -14,3 +14,7 @@ export function labeledErrors (errors) {
 
   return label
 }
+
+export function limitString(string, limit) {
+  return string.substr(0, limit) + '...'
+}

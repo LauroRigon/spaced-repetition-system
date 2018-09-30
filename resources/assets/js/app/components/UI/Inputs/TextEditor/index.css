@@ -1,0 +1,8 @@
+.editor {
+  border: 1px solid grey;
+  padding: 2px;
+}
+
+.public-DraftEditor-content {
+  min-height: 50px
+}

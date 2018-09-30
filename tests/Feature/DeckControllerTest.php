@@ -26,7 +26,8 @@ class DeckControllerTest extends TestCase
         $deck_data = [
             'name' => 'Nome do deck',
             'description' => 'descrip deck',
-            'deck_config_id' => 0
+            'deck_config_id' => 0,
+            'folder' => ''
         ];
 
         $response = $this->withHeader('Authorization', "Bearer $authToken")->json('POST','api/decks', $deck_data);
@@ -290,5 +291,146 @@ class DeckControllerTest extends TestCase
 
         $response = $this->withHeader('Authorization', "Bearer $userCheaterToken")->json('PUT',"api/decks/$deck->id", $deck_data_update);
         $response->assertForbidden();
+    }
+
+    /**
+     * Testa se consegue listar os decks publicos
+     * @test
+     * @group deck
+     * @return void
+     */
+    public function can_list_public_decks()
+    {
+        $user = factory(User::class)->create();
+        $authToken = $this->guard()->fromUser($user);
+        $decks = factory(Deck::class, 4)->create([
+            'creator_id' => $user->id,
+            'is_public' => 1
+        ]);
+
+        $response = $this->withHeader('Authorization', "Bearer $authToken")->json('GET','api/decks/public-decks/');
+        $response->assertStatus(200);
+
+        $responseJson = $response->json();
+        $this->assertCount(4, $responseJson['data']);
+    }
+
+    /**
+     * Testa se consegue listar no maximo 10 decks
+     * @test
+     * @group deck
+     * @return void
+     */
+    public function can_list_max_10_public_decks()
+    {
+        $user = factory(User::class)->create();
+        $authToken = $this->guard()->fromUser($user);
+        $decks = factory(Deck::class, 20)->create([
+            'creator_id' => $user->id,
+            'is_public' => 1
+        ]);
+
+        $response = $this->withHeader('Authorization', "Bearer $authToken")->json('GET','api/decks/public-decks/');
+        $response->assertStatus(200);
+
+        $responseJson = $response->json();
+        $this->assertCount(10, $responseJson['data']);
+    }
+
+    /**
+     * Testa se consegue se inscrever em um deck
+     * @test
+     * @group deck
+     */
+    public function can_subscribe_to_deck()
+    {
+        $user = factory(User::class)->create();
+        $authToken = $this->guard()->fromUser($user);
+
+        //deck publico de outro usuario
+        $deck = factory(Deck::class)->create([
+            'creator_id' => factory(User::class)->create()->id,
+            'is_public' => 1
+        ]);
+
+        $reqData = [
+          'folder' => 'ingles',
+          'deck_config_id' => 0
+        ];
+        $response = $this->withHeader('Authorization', "Bearer $authToken")->json('POST',"api/decks/public-decks/subscribe/$deck->id", $reqData);
+//        dd($response->content());
+
+        $response->assertStatus(200);
+
+        $dataExpected = [
+            'deck_id' => $deck->id,
+            'user_id' => $user->id,
+            'folder' => $reqData['folder'],
+            'deck_config_id' => null,
+        ];
+
+        $this->assertDatabaseHas('deck_user', $dataExpected);
+    }
+
+    /**
+ * Testa se não consegue se inscrever em um deck privado
+ * @test
+ * @group deck
+ */
+    public function cannot_subscribe_to_private_deck()
+    {
+        $user = factory(User::class)->create();
+        $authToken = $this->guard()->fromUser($user);
+
+        //deck privado de outro usuario
+        $deck = factory(Deck::class)->create([
+            'creator_id' => factory(User::class)->create()->id,
+            'is_public' => 0
+        ]);
+
+        $reqData = [
+            'folder' => 'ingles',
+            'deck_config_id' => 0
+        ];
+        $response = $this->withHeader('Authorization', "Bearer $authToken")->json('POST',"api/decks/public-decks/subscribe/$deck->id", $reqData);
+        $response->assertForbidden();
+
+        $dataNotExpected = [
+            'deck_id' => $deck->id,
+            'user_id' => $user->id,
+        ];
+
+        $this->assertDatabaseMissing('deck_user', $dataNotExpected);
+    }
+
+    /**
+     * Testa se consegue se desinscrever de um deck
+     * @test
+     * @group deck
+     */
+    public function can_unsubscribe_to_deck()
+    {
+        $user = factory(User::class)->create();
+        $authToken = $this->guard()->fromUser($user);
+
+        //deck publico de outro usuario
+        $deck = factory(Deck::class)->create([
+            'creator_id' => factory(User::class)->create()->id,
+            'is_public' => 1
+        ]);
+
+        //inscreve no deck do outro usuário
+        $user->usesdecks()->attach($deck->id);
+
+        //tenta se desinscrever
+        $response = $this->withHeader('Authorization', "Bearer $authToken")->json('DELETE',"api/decks/public-decks/unsubscribe/$deck->id");
+        $response->assertStatus(200);
+
+        $dataNotExpected = [
+            'deck_id' => $deck->id,
+            'user_id' => $user->id,
+        ];
+
+        $this->assertDatabaseMissing('deck_user', $dataNotExpected);
     }
 }

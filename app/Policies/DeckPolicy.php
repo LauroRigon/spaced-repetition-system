@@ -57,6 +57,15 @@ class DeckPolicy
         return false;
     }
 
+    public function subscribe(User $user, Deck $deck)
+    {
+        if ($deck->is_public) {
+            return true;
+        }
+
+        return false;
+    }
+
     /**
      * Determine whether the user can delete the deck.
      *

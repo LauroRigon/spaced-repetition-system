@@ -17,6 +17,10 @@ const Menus = () => {
         <Icon name='cog' />
         <NavLink to='/decks-configs' activeClassName="selected"> Configurações </NavLink>
       </Menu.Item>
+      <Menu.Item >
+        <Icon name='users' />
+        <NavLink to='/public-decks' activeClassName="selected"> Procurar decks públicos </NavLink>
+      </Menu.Item>
     </React.Fragment>
   )
 }

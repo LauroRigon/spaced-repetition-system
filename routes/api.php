@@ -22,6 +22,12 @@ Route::middleware(['api', 'refreshExpiredToken'])->group(function() {
     Route::get('sendVerificationLink', 'Auth\RegisterController@reSendVerificationLink');
 
     Route::prefix('decks')->group(function() {
+        Route::prefix('public-decks')->group(function() {
+            Route::get('/{query?}', 'DeckController@publicDecks');
+            Route::post('/subscribe/{deck}', 'DeckController@subscribeToDeck');
+            Route::delete('/unsubscribe/{deck}', 'DeckController@unsubscribeFromDeck');
+        });
+
         Route::post('/', 'DeckController@store');
         Route::get('/', 'DeckController@myUsedDecks');
         Route::get('/{deck}', 'DeckController@show');
@@ -36,6 +42,10 @@ Route::middleware(['api', 'refreshExpiredToken'])->group(function() {
         });
     });
 
+    Route::prefix('cards')->group(function() {
+        Route::post('/', 'CardController@store');
+
+    });
 
 
     Route::get('test', function(){

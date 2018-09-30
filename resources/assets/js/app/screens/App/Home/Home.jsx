@@ -1,9 +1,11 @@
-import React, { Component } from 'react';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
+import React, { Component } from 'react'
 
 class Home extends Component {
-  render() {
+  constructor (props) {
+    super(props)
+  }
+
+  render () {
     return (
       <React.Fragment>
         
@@ -12,8 +14,4 @@ class Home extends Component {
   }
 }
 
-const mapDispatchToProps = dispatch => {
-  return bindActionCreators({}, dispatch)
-}
-
-export default connect(null)(Home);
+export default Home

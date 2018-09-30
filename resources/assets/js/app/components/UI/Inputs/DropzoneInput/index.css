@@ -1,0 +1,42 @@
+.dropbox {
+  position: relative;
+  padding: 4px;
+  border-width: 2px;
+  border-color: rgba(102, 102, 102, 0.9);
+  border-style: dashed;
+  margin: 2px;
+  min-height: 45px;
+}
+
+ .dropbox .drop-label {
+  position: absolute;
+  text-align: center;  
+  z-index: 0;
+  top: 0;
+  left: 0;
+  margin-left: auto; 
+  margin-right: auto;
+  margin-top: 8px;
+  width: 100%;
+  color: #999999;
+  font-size: 20px;
+}
+
+.dropbox .dropzone-content {
+  position: relative;
+  z-index: 100;
+}
+
+.dropbox.accept {
+  border-style: solid;
+  border-color: rgb(204, 230, 120) !important;
+  background-color: rgba(102, 102, 102, 0.3)
+}
+.dropbox.reject {
+  border-style: solid;
+  border-color: rgb(209, 0, 0) !important;
+}
+
+.dropbox.midia-drop {
+  height: auto;  
+}

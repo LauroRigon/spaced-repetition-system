@@ -5,8 +5,8 @@ import { connect } from 'react-redux';
 import Header from 'app/components/UI/Header';
 import SideDrawer from '../../components/UI/SideDrawer/SideDrawer';
 import VerificationMessage from '../../components/UI/VerificationMessage';
-
-import { setIsSidebarOpen } from 'app/actions/ui';
+import ModalManager from 'app/components/UI/Modals/ModalManager';
+import { setIsSidebarOpen } from 'app/actions/ui/settings';
 import { checkSession } from 'app/actions/user';
 import AppLoader from '../../components/UI/AppLoader';
 
@@ -22,9 +22,7 @@ class AppParent extends React.Component {
     this.handleCloseVerificationMessage = this.handleCloseVerificationMessage.bind(this);
   }
   componentDidMount() {
-    this.closeSidebar();
-
-    
+    this.closeSidebar();    
   }
 
   componentWillMount() {
@@ -61,6 +59,7 @@ class AppParent extends React.Component {
 
     return (
       <div className="animated fadeIn">
+        <ModalManager/>
         <Header handleSideDrawerClick={this.openSidebar} />
         <SideDrawer visible={!isMobile || isSidebarOpen} user={user} />
         <Dimmer active={isMobile && isSidebarOpen} onClick={this.closeSidebar} />
@@ -85,11 +84,11 @@ class AppParent extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    isSidebarOpen: state.ui.isSidebarOpen,
-    isMobile: state.ui.isMobile,
+    isSidebarOpen: state.ui.settings.isSidebarOpen,
+    isMobile: state.ui.settings.isMobile,
     user: state.user.account,
     authToken: state.user.authToken,
-    appLoaded: state.ui.isLoaded
+    appLoaded: state.ui.settings.isLoaded
   }
 }
 

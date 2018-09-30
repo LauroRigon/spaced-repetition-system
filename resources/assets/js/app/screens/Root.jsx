@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import ReduxToastr from 'react-redux-toastr';
 import mountRoutes from './routes';
-import { windowResize } from '../actions/ui';
+import { windowResize } from '../actions/ui/settings';
 import throttle from 'lodash/throttle';
 
 class ScreensRoot extends React.Component {
@@ -13,6 +13,10 @@ class ScreensRoot extends React.Component {
 
   componentWillMount() {
     window.addEventListener('resize', throttle(this.props.windowResize, 500))
+    
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual'
+    }
   }
   
   render() {
@@ -27,7 +31,7 @@ class ScreensRoot extends React.Component {
           transitionOut="fadeOut"
           progressBar
           closeOnToastrClick />
-
+        
         {mountRoutes()}
       </div>
     )

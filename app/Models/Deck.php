@@ -16,6 +16,7 @@ class Deck extends Model
     protected $casts = [
         'created_at' => 'datetime:d-m-Y',
         'updated_at' => 'datetime:d-m-Y',
+        'is_public' => 'boolean'
     ];
 
     /**
@@ -35,6 +36,15 @@ class Deck extends Model
     {
         return $this->belongsTo(User::class, 'creator_id');
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function cards()
+    {
+        return $this->hasMany(Card::class);
+    }
+
 
     /*#### MUTATORS ####*/
     //public function get

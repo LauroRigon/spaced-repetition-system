@@ -20,10 +20,17 @@ class DeckController extends APIController
         $this->decksRepository = new DecksRepository();
     }
 
+    /**
+     * Retorna um deck com seus detalhes
+     * @param Request $request
+     * @param $deck : id do deck que será mostrado
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function show(Request $request, $deck)
     {
         $user = $request->user();
-        $deck = $this->decksRepository->findDeckWithPivot($deck, $user->id);
+
+        $deck = $this->decksRepository->findDeckWithPivotIfExist($deck, $user->id);
 
         if ($user->cannot('view', $deck)) {
             return $this->respondWithForbiddenError("Você não tem permissão para acessar esse deck");
@@ -32,12 +39,26 @@ class DeckController extends APIController
         return $this->respondWithData($deck);
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function myUsedDecks(Request $request)
     {
         $user = $request->user();
         $decks = $this->decksRepository->getAllUsedDecksByUser($user);
 
         return $this->respondWithData($decks);
+    }
+
+    /**
+     * Retorna os decks publicos filtrando pela query de pesquisa qual o usuário digitou.
+     * @param null $query : search digitado pelo usuário
+     * @return Illuminate\Pagination\Paginator
+     */
+    public function publicDecks($query = null)
+    {
+       return $this->decksRepository->searchPublicDecks($query, 10);
     }
 
     /**
@@ -52,12 +73,9 @@ class DeckController extends APIController
         $toPivot = $request->only('folder', 'deck_config_id');
 
         $user = $request->user();
+        $toDeck['creator_id'] = $user->id;
 
-        $deck = $this->decksRepository->create([
-            'name' => $toDeck['name'],
-            'description' => $toDeck['description'],
-            'creator_id' => $user->id
-        ]);
+        $deck = $this->decksRepository->create($toDeck);
 
         $this->decksRepository->storeDeckUsedByUser($deck, $user, $toPivot);
 
@@ -80,17 +98,9 @@ class DeckController extends APIController
         $toDeck = $request->only('name', 'description', 'is_public');
         $toPivot = $request->only('folder', 'deck_config_id');
 
-        $success = $this->decksRepository->update([
-            'name' => $toDeck['name'],
-            'description' => $toDeck['description'],
-            'is_public' => $toDeck['is_public']
-        ], $deck);
+        $success = $this->decksRepository->update($toDeck, $deck);
 
         if ($success) {
-//            $toPivot = [];
-//            array_key_exists('folder', $data) ? $toPivot['folder'] = $data['folder'] : $toPivot['folder'] = '/';
-//            (array_key_exists('deck_config_id', $data) && $data['deck_config_id']) ? $toPivot['deck_config_id'] = $data['deck_config_id'] : null;
-
             $this->decksRepository->updatePivot($deck, $user->id, $toPivot);
         }
 
@@ -98,8 +108,37 @@ class DeckController extends APIController
     }
 
     /**
+     * Increve o usuário logado em um deck publico
+     * @param Request $request
+     * @param $deck
+     */
+    public function subscribeToDeck(Request $request, Deck $deck)
+    {
+        $data = $request->only('folder', 'deck_config_id');
+
+        $user = $request->user();
+        if(!$user->can('subscribe', $deck)) {
+            return $this->respondWithForbiddenError('Você não pode se inscrever nesse deck!');
+        }
+
+        try {
+            $this->decksRepository->subscribeUserToDeck($user, $deck, $data);
+        }catch(\Exception $e) {
+            return $this->respondWithError($e->getMessage());
+        }
+
+        return $this->respondWithSuccess();
+    }
+
+    public function unsubscribeFromDeck(Deck $deck)
+    {
+        $user = Auth::user();
+        $user->usesDecks()->detach($deck->id);
+
+        return $this->respondWithSuccess('Desinscrito com sucesso');
+    }
+    /**
      * Remove the specified resource from storage.
-     *
      * @param  int $id
      * @return \Illuminate\Http\JsonResponse
      */
@@ -114,11 +153,11 @@ class DeckController extends APIController
 
         $this->decksRepository->disassociateUserFromDeck($user->id, $deck);
 
-        //degundo parametro eh de forceDelete para realmente deletar por completo o deck se esse for privado
+        //segundo parametro eh de forceDelete para realmente deletar por completo o deck se esse for privado.
+        //Do contrário (deck publico) o deck será deletado lógicamente, sendo assim quem era cadastrado nele não ira perder o deck!
         $shouldBeRealDeleted = !$deck->is_public;
         $this->decksRepository->delete($deck->id, $shouldBeRealDeleted);
 
         return $this->respondWithSuccess('Deck excluído com sucesso!');
-
     }
 }

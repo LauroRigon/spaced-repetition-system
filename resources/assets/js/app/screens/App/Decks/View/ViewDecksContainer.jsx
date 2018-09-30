@@ -2,15 +2,15 @@ import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-
-import { SubmissionError } from 'redux-form'
-import { fetchDeck, sendDeleteDeck } from './actions'
+import { fetchDeck, sendDeleteDeck, subscribeToDeck, unSubscribe } from './actions'
 import { Grid } from 'semantic-ui-react'
 import DeckView from '../../../../components/Decks/View'
 import ViewActions from '../../../../components/Decks/View/ViewActions'
 
 import { submitForm, setModalOpen } from '../actions'
 import { fetchDeckConfigList } from '../../DeckConfigs/actions'
+import { showModal, hideModal } from 'app/actions/ui/modals'
+
 import FormModal from '../../../../components/Decks/FormModal'
 // import DecksFormModal from '../../../../components/Decks/FormModal';
 
@@ -30,6 +30,12 @@ class ViewDecksContainer extends Component {
     this.handleModalClose = this.handleModalClose.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
     this.handleFetchDeck = this.handleFetchDeck.bind(this)
+
+    this.handleAddCardsClick = this.handleAddCardsClick.bind(this)
+
+    this.handleSubscribeClick = this.handleSubscribeClick.bind(this)
+    this.handleSubscribeSubmit = this.handleSubscribeSubmit.bind(this)
+    this.handleUnsubscribeClick = this.handleUnsubscribeClick.bind(this)
   }
 
   componentWillMount () {
@@ -75,8 +81,38 @@ class ViewDecksContainer extends Component {
     this.props.submitForm('put', values, onSuccessFetchAgain, deck_id)
   }
 
+
+  /**
+   * Add card
+   */
+  handleAddCardsClick () {
+    this.props.showModal('CardsFormModal', {icon: 'plus', header: 'Adicionar card', deck: this.props.deck, closeOnDimmerClick: false})
+  }
+
+  /**
+   * Subscribe
+   */
+  handleSubscribeClick() {
+    const {
+      deck,
+      configList
+    } = this.props
+
+    this.props.showModal('SubscribeModal', {deck: deck, configs: configList, onSubmit: this.handleSubscribeSubmit})
+  }
+
+  handleSubscribeSubmit(values) {
+    console.log(values)
+    this.props.subscribeToDeck(this.props.deck.id, values)
+    this.props.hideModal()
+  }
+
+  handleUnsubscribeClick() {
+    this.props.unSubscribe(this.props.deck.id, this.props.history)
+  }
+
   render () {
-    const { deck, auth_user_id, ui, configList } = this.props
+    const { deck, auth_user, ui, configList } = this.props
     const initialFormValues = {
       name: deck.name,
       description: deck.description,
@@ -109,13 +145,17 @@ class ViewDecksContainer extends Component {
           </Grid.Column>
           <Grid.Column largeScreen={4} computer={4} tablet={5}>
             <ViewActions
-              authenticatedUserId={auth_user_id}
-              deckCreatorId={deck.creator_id}
+              authenticatedUser={auth_user}
+              deck={deck}
               openDeleteConfirm={this.state.openDeleteConfirm}
               handleDeleteDeck={this.handleDeleteDeck}
               handleOpenDeleteConfirm={this.handleOpenDeleteConfirm}
               closeDeleteConfirm={this.closeDeleteConfirm}
               handleOpenEditModal={this.handleEditModalOpen}
+              handleOpenAddCardsModal={this.handleAddCardsClick}
+              handleOpenSubscribeModal={this.handleSubscribeClick}
+              handleOnSubmitSubscribe={this.handleSubscribeSubmit}
+              handleUnsubscribeClick={this.handleUnsubscribeClick}
             />
           </Grid.Column>
         </Grid>
@@ -126,7 +166,7 @@ class ViewDecksContainer extends Component {
 
 const mapStateToProps = state => {
   return {
-    auth_user_id: state.user.account.id,
+    auth_user: state.user.account,
     ui: state.app.decks.ui,
     deck: state.app.decks.view.deck,
     configList: state.app.deckConfigs.configList
@@ -141,7 +181,13 @@ const mapDispatchToProps = dispatch => {
       submitForm,
       setModalOpen,
 
-      fetchDeckConfigList
+      fetchDeckConfigList,
+
+      showModal,
+      hideModal,
+
+      subscribeToDeck,
+      unSubscribe,
     },
     dispatch
   )

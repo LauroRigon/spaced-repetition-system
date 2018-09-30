@@ -1,39 +1,21 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { labeledErrors } from 'app/services/helpers'
 import { Field, reduxForm } from 'redux-form'
 import If from 'app/components/UI/If'
-import {
-  Header,
-  Form,
-  Input,
-  Segment,
-  Button,
-  Icon,
-  TextArea,
-  Checkbox,
-  Dropdown,
-  Modal
-} from 'semantic-ui-react'
+import { Header, Form, Segment, Button, Icon, Modal } from 'semantic-ui-react'
 import LabelAndInput from '../../UI/Inputs/LabelAndInput'
 import LabelAndSelect from '../../UI/Inputs/LabelAndSelect'
-import LabelAndCheckbox from '../../UI/Inputs/LabelAndCheckbox';
-import LabelAndTextarea from '../../UI/Inputs/LabelAndTextarea';
+import LabelAndCheckbox from '../../UI/Inputs/LabelAndCheckbox'
+import LabelAndTextarea from '../../UI/Inputs/LabelAndTextarea'
 
 class DecksFormModal extends Component {
   constructor (props) {
     super(props)
   }
-  
-  componentDidMount() {
-    this.props.initialize(this.props.initialValues)
-  }  
 
-  /*componentWillReceiveProps(nextProps) {
-    if(nextProps.initialValues && (nextProps.initialValues !== this.props.initialValues)) {
-      this.props.initialize(nextProps.initialValues)
-    }
-  }*/
+  componentDidMount () {
+    this.props.initialize(this.props.initialValues)
+  }
 
   render () {
     const {
@@ -62,7 +44,6 @@ class DecksFormModal extends Component {
             <Segment>
               <Header icon={icon} content={header} />
               <Form onSubmit={handleSubmit} loading={loading}>
-
                 <Field
                   name='name'
                   component={LabelAndInput}
@@ -92,10 +73,20 @@ class DecksFormModal extends Component {
                 />
 
                 <If test={isEdit}>
-                <Field name='is_public' component={LabelAndCheckbox} toggle label='Deck público'/>
+                  <Field
+                    name='is_public'
+                    component={LabelAndCheckbox}
+                    toggle
+                    label='Deck público'
+                  />
                 </If>
 
-                  <Field name='description' component={LabelAndTextarea} rows={5} placeholder='Descrição do seu deck'/>
+                <Field
+                  name='description'
+                  component={LabelAndTextarea}
+                  rows={5}
+                  placeholder='Descrição do seu deck'
+                />
 
                 <Button positive icon labelPosition='left' disabled={loading}>
                   <Icon name='check' />{buttonLabel}
@@ -121,5 +112,9 @@ class DecksFormModal extends Component {
 
 export default reduxForm({
   form: 'deck',
-  initialValues: { deck_config_id: 0, is_public: false, enableReinitialize: true }
+  initialValues: {
+    deck_config_id: 0,
+    is_public: false,
+    enableReinitialize: true
+  }
 })(DecksFormModal)

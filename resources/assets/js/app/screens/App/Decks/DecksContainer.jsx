@@ -9,6 +9,7 @@ import {
   setModalOpen,
   fetchDeckList,
 } from './actions'
+
 import { fetchDeckConfigList } from '../DeckConfigs/actions'
 
 import DecksList from '../../../components/Decks/List'
@@ -99,7 +100,7 @@ const mapDispatchToProps = dispatch => {
       setModalOpen,
       fetchDeckList,
 
-      fetchDeckConfigList
+      fetchDeckConfigList,
     },
     dispatch
   )
