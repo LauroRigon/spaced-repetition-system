@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { fetchDeck, sendDeleteDeck, subscribeToDeck, unSubscribe } from './actions'
+import { fetchDeck, sendDeleteDeck, subscribeToDeck, unSubscribe, setDeck } from './actions'
 import { Grid } from 'semantic-ui-react'
 import DeckView from '../../../../components/Decks/View'
 import ViewActions from '../../../../components/Decks/View/ViewActions'
@@ -37,6 +37,11 @@ class ViewDecksContainer extends Component {
     this.handleSubscribeSubmit = this.handleSubscribeSubmit.bind(this)
     this.handleUnsubscribeClick = this.handleUnsubscribeClick.bind(this)
   }
+
+  componentWillUnmount() {
+    this.props.setDeck({})
+  }
+  
 
   componentWillMount () {
     this.props.fetchDeckConfigList()
@@ -177,6 +182,7 @@ const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
       fetchDeck,
+      setDeck,
       sendDeleteDeck,
       submitForm,
       setModalOpen,
