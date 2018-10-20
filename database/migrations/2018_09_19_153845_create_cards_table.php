@@ -20,6 +20,7 @@ class CreateCardsTable extends Migration
             $table->integer('type');
             $table->integer('front_content_id')->unsigned();
             $table->integer('back_content_id')->unsigned();
+            $table->timestamp('suspended_at')->nullable();
             $table->timestamps();
 
             $table->foreign('deck_id')->references('id')->on('decks')->onDelete('cascade');;

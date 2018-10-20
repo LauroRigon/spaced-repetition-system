@@ -5,10 +5,11 @@ import {
   RichUtils,
   getDefaultKeyBinding,
   convertToRaw,
+  convertFromHTML,
   ContentState
 } from 'draft-js'
 import draftToHtml from 'draftjs-to-html'
-import If from 'app/components/UI/If'
+import {stateFromHtml} from 'draft-js-import-html'
 import './index.css'
 import BlockStyleControls from './BlockStyleControls'
 import InlineStyleControls from './InlineStyleControls'
@@ -26,12 +27,20 @@ const styleMap = {
 class TextEditor extends Component {
   constructor (props) {
     super(props)
-    const editorState = EditorState.createEmpty()
+    var editorState = ''
+
+    if(props.initialValue) {
+      const blocksFromHtml = convertFromHTML(props.initialValue)
+      const contentState = ContentState.createFromBlockArray(blocksFromHtml.contentBlocks, blocksFromHtml.entityMap)
+      editorState = EditorState.createWithContent(contentState)
+    } else {
+      editorState = EditorState.createEmpty()
+    }
+
+    // const editorState = props.initialValue ? EditorState.createWithContent(convertFromHTML(props.initialValue)) : EditorState.createEmpty()
     this.state = {
       editorState: editorState
     }
-
-    this.changeValue(editorState)
 
     this.handleChange = this.handleChange.bind(this)
     this.handleKeyCommand = this.handleKeyCommand.bind(this)
@@ -40,6 +49,15 @@ class TextEditor extends Component {
     this.toggleInlineStyle = this._toggleInlineStyle.bind(this)
     this.getBlockStyle = this._getBlockStyle.bind(this)
   }
+
+componentDidMount () {
+  // if(this.props.initialValue){
+  //   initialized
+  //   this.changeValue(this.state.editorState)  
+  // }
+  this.changeValue(this.state.editorState)
+}
+
 
   handleKeyCommand (command, editorState) {
     const newState = RichUtils.handleKeyCommand(editorState, command)

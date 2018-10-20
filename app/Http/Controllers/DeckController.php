@@ -130,8 +130,9 @@ class DeckController extends APIController
         return $this->respondWithSuccess();
     }
 
-    public function unsubscribeFromDeck(Deck $deck)
+    public function unsubscribeFromDeck($deck)
     {
+        $deck = Deck::withTrashed()->where('id', $deck)->first();
         $user = Auth::user();
         $user->usesDecks()->detach($deck->id);
 

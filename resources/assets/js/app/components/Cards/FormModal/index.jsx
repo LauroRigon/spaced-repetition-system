@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { reduxForm, Field } from 'redux-form'
 import { toastr } from 'react-redux-toastr'
 import { Form, Modal, Header, Button } from 'semantic-ui-react'
+import If from '../../UI/If'
 import DropzoneInput from 'app/components/UI/Inputs/DropzoneInput'
 import TextEditor from 'app/components/UI/Inputs/TextEditor'
 import LabelAndSelect from '../../UI/Inputs/LabelAndSelect'
@@ -20,7 +21,13 @@ class CardsFormModal extends Component {
     this.handleRemoveBackMidia = this.handleRemoveBackMidia.bind(this)
   }
   componentWillMount () {
-    this.props.initialize({ deck_id: this.props.deck.id })
+    // if(this.props.isEdit) {
+    //   console.log('era pra da')
+    //   this.props.initialize({deck_id: this.props.deck.id, front_text: 'vai toma no cu'})
+    // } else {
+      this.props.initialize({ deck_id: this.props.deck.id })
+    // }
+    
   }
 
   setLoading (value) {
@@ -28,6 +35,7 @@ class CardsFormModal extends Component {
   }
 
   appendDataToForm (data) {
+    console.log(data)
     var formData = new FormData()
     formData.append('deck_id', data.deck_id)
     formData.append('front_text', data.front_text)
@@ -46,17 +54,38 @@ class CardsFormModal extends Component {
     return formData
   }
 
+  parseFromFormData (formData) {
+    return {
+      deck_id: formData.get('deck_id'),
+      front_text: formData.get('front_text'),
+      back_text: formData.get('back_text')
+    }
+  }
+
   onSubmit (data) {
     if(data.front_text.replace(/&nbsp;+/g, '').length <= 8) return toastr.warning('Atenção!', 'O primeiro campo é obrigatório!')
+
+    const {
+      isEdit,
+      cardToEdit
+    } = this.props
+    const type = isEdit ? 'put' : 'post'
+
     this.setLoading(true)
     const formData = this.appendDataToForm(data)
+    var paramsToPut = {}
+    if(isEdit) {
+      paramsToPut = this.parseFromFormData(formData)
+      console.log(paramsToPut)
+    }
 
-    api.post('cards/', formData)
+    api[type]('cards/' + (isEdit ? cardToEdit.id : ''), formData, (isEdit ? {params: paramsToPut} : null))
       .then(response => {
-        toastr.success('Tudo certo!', 'Card adicionado com sucesso!')
+        toastr.success('Tudo certo!', `Card ${isEdit ? 'atualizado' : 'criado'} com sucesso!`)
         this.props.reset()
         this.forceUpdate()
         this.setLoading(false)
+        this.props.onSubmitSuccess()
       })
       .catch(({ response }) => {
         toastr.error('Ocorreu um erro!', 'Erro!')
@@ -74,7 +103,7 @@ class CardsFormModal extends Component {
   }
 
   render () {
-    const { handleSubmit, deck, icon, header, closeOnDimmerClick } = this.props
+    const { handleSubmit, deck, icon, header, closeOnDimmerClick, cardToEdit, isEdit } = this.props
 
     return (
       <Modal
@@ -103,31 +132,33 @@ class CardsFormModal extends Component {
               disabled
               inline
             />
-            <Field name='front_text' component={TextEditor} label='Frente:' />
-            <Field
-              name='front_medias'
-              component={DropzoneInput}
-              onRemove={this.handleRemoveFrontMidia}
-              dropzone_props={{
-                multiple: true,
-                accept: ['image/*', 'audio/mp3'],
-                maxSize: 2000000
-              }}
-            />
-
-            <Field name='back_text' component={TextEditor} label='Verso:' />
-            <Field
-              name='back_medias'
-              component={DropzoneInput}
-              onRemove={this.handleRemoveBackMidia}
-              dropzone_props={{
-                multiple: true,
-                accept: ['image/*', 'audio/mp3'],
-                maxSize: 2000000
-              }}
-            />
-
-            <Button primary> Criar </Button>
+            <Field name='front_text' component={TextEditor} label='Frente:' initialValue={isEdit ? cardToEdit.front_content.text : ''}/>
+            <If test={!isEdit}>
+              <Field
+                name='front_medias'
+                component={DropzoneInput}
+                onRemove={this.handleRemoveFrontMidia}
+                dropzone_props={{
+                  multiple: true,
+                  accept: ['image/*', 'audio/mp3'],
+                  maxSize: 2000000
+                }}
+              />
+            </If>
+            <Field name='back_text' component={TextEditor} label='Verso:' initialValue={isEdit && cardToEdit.back_content.text != ''  ? cardToEdit.back_content.text : null}/>
+            <If test={!isEdit}>
+              <Field
+                name='back_medias'
+                component={DropzoneInput}
+                onRemove={this.handleRemoveBackMidia}
+                dropzone_props={{
+                  multiple: true,
+                  accept: ['image/*', 'audio/mp3'],
+                  maxSize: 2000000
+                }}
+              />
+            </If>
+            <Button primary> {isEdit ? 'Salvar' : 'Criar'} </Button>
           </Form>
           {/* </Segment> */}
         </Modal.Content>

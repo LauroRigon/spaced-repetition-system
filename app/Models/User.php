@@ -76,6 +76,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->belongsToMany(Deck::class)->withTimestamps()->withPivot('folder', 'deck_config_id');
     }
 
+    public function cards()
+    {
+        return $this->hasManyThrough(Card::class, Deck::class, 'creator_id');
+    }
+
     /**
      * Retorna os decks criados pelo usuário
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -93,6 +98,15 @@ class User extends Authenticatable implements JWTSubject
     public function ownsDeck($deck)
     {
         if($this->id == $deck->user_id){
+            return true;
+        }
+
+        return false;
+    }
+
+    public function ownsCard(Card $card)
+    {
+        if($this->id === $card->getUser()->id) {
             return true;
         }
 

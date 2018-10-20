@@ -8,6 +8,7 @@ use App\Models\Media;
 use App\Models\User;
 use App\Repositories\Support\BaseRepository;
 use App\Models\Deck;
+use Carbon\Carbon;
 use Illuminate\Contracts\Queue\EntityNotFoundException;
 use Illuminate\Http\File;
 use Illuminate\Support\Facades\Auth;
@@ -17,6 +18,12 @@ class CardsRepository extends BaseRepository
 {
     protected $modelClass = Card::class;
 
+    /**
+     * Cria um card com conteudo, midias armazenadas e card factors
+     * Em relacao ao tipo de card: 0 = learning, 1 = reviewing
+     * @param array $data
+     * @return Support\Model
+     */
     public function createCardWithContent(array $data) {
         $deck = Deck::findOrFail($data['deck_id']);
 
@@ -66,4 +73,63 @@ class CardsRepository extends BaseRepository
         return $card;
     }
 
+    /**
+     * Calculo pra calcular novo e-factor. Provavelmente nao ficará aqui nesse arquivo!
+     * @param $currentFactor
+     * @param $answer
+     * @return float|int
+     */
+    public function calcNewFactor($currentFactor, $answer)
+    {
+        $newFactor = $currentFactor + (0.1 - (5 - $answer) * (0.08 + (5 - $answer) * 0.02));
+
+        return $newFactor >= 1.30 ? $newFactor : 1.30;
+    }
+
+    public function updateContents($contents, $card)
+    {
+//        dd($card->frontContent);
+        $card->frontContent->text = $contents['front_text'];
+        $card->backContent->text = $contents['back_text'];
+
+        return $card->push();
+    }
+
+    public function getUserCards($user, $filter)
+    {
+        $queryCards = $user->cards();
+
+        if(array_key_exists('front_text', $filter)) {
+            $queryCards = $queryCards->whereHas('frontContent', function ($query) use ($filter) {
+               $query->where('text', 'LIKE', '%'. $filter['front_text'] .'%');
+            });
+        }
+
+        if(array_key_exists('back_text', $filter)) {
+            $queryCards = $queryCards->whereHas('backContent', function ($query) use ($filter) {
+//                dd($filter);
+               $query->where('text', 'LIKE', '%'. $filter['back_text'] .'%');
+            });
+        }
+
+        if(array_key_exists('deck_id', $filter)) {
+            if(!!$filter['deck_id']) {
+                $queryCards = $queryCards->where('deck_id', $filter['deck_id']);
+            }
+        }
+
+        return $queryCards->with(['frontContent', 'backContent', 'deck'])->paginate(20);
+    }
+
+    public function suspendCard($card)
+    {
+        $card->suspended_at = Carbon::now();
+        return $card->save();
+    }
+
+    public function unsuspendCard($card)
+    {
+        $card->suspended_at = null;
+        return $card->save();
+    }
 }

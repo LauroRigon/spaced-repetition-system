@@ -105,4 +105,14 @@ class DeckPolicy
     {
         //
     }
+
+    public function searchCards(User $user, Deck $deck)
+    {
+
+        if($user->id === $deck->owner->id) {
+            return true;
+        }
+
+        return false;
+    }
 }

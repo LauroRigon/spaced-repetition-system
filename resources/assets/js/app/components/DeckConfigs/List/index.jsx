@@ -5,7 +5,8 @@ import { Table, Button } from 'semantic-ui-react'
 const DeckConfigsList = ({ configsList, onEditClick, onDeleteClick }) => {
   return (
     <React.Fragment>
-      <Table celled>
+      <div style={{overflow: 'overlay'}}>
+      <Table celled unstackable>
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell>Nome</Table.HeaderCell>
@@ -19,6 +20,7 @@ const DeckConfigsList = ({ configsList, onEditClick, onDeleteClick }) => {
           {renderRows(configsList, onEditClick, onDeleteClick)}
         </Table.Body>
       </Table>
+      </div>
     </React.Fragment>
   )
 }

@@ -34,4 +34,14 @@ class Card extends Model
     {
         return $this->hasOne(Content::class, 'id', 'back_content_id');
     }
+
+    public function factor()
+    {
+        return $this->hasMany(CardFactor::class);
+    }
+
+    public function getUser()
+    {
+        return $this->deck->owner;
+    }
 }

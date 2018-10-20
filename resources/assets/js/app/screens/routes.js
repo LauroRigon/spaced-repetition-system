@@ -1,17 +1,19 @@
 import React from 'react';
-import { Route, Switch, Redirect, HashRouter,  } from 'react-router-dom';
-import AuthParent from './Auth/Parent';
-import Login from './Auth/Login';
-import AppParent from './App/Parent';
-import Home from './App/Home';
-import Register from './Auth/Register';
-import PrivateRoute from './routeRules/PrivateRoute';
-import OnlyGuestRoute from './routeRules/OnlyGuestRoute';
+import { HashRouter, Redirect, Route, Switch } from 'react-router-dom';
 import Error404 from '../components/Errors/Error404/Error404';
+import DeckConfigsContainer from './App/DeckConfigs/DeckConfigsContainer';
 import DecksContainer from './App/Decks/DecksContainer';
 import ViewDecksContainer from './App/Decks/View/ViewDecksContainer';
-import DeckConfigsContainer from './App/DeckConfigs/DeckConfigsContainer';
+import Home from './App/Home';
+import AppParent from './App/Parent';
 import PublicDecksContainer from './App/PublicDecks/PublicDecksContainer';
+import CardsBrowserContainer from './App/CardsBrowser';
+import Login from './Auth/Login';
+import AuthParent from './Auth/Parent';
+import Register from './Auth/Register';
+import PasswordRecovery from './Auth/PasswordRecovery/PasswordRecovery';
+import OnlyGuestRoute from './routeRules/OnlyGuestRoute';
+import PrivateRoute from './routeRules/PrivateRoute';
 
 export default () => (
   <HashRouter>
@@ -24,7 +26,7 @@ export default () => (
             <Switch>
               <Route path={`${match.url}/login`} component={Login} />
               <Route path={`${match.url}/register`} component={Register} />
-              {/* <Route path={`${match.url}/password/recovery`} component={PasswordRecovery} /> */}
+              <Route path={`${match.url}/password/recovery`} component={PasswordRecovery} />
 
               <Redirect from='*' to={`${match.url}/login`} />
             </Switch>
@@ -50,6 +52,8 @@ export default () => (
               <Route path={`${match.url}public-decks`} exact component={(props) => (
                 <PublicDecksContainer key={props.location.search} {...props}/>
               )} />
+                
+              <Route path={`${match.url}cards-browser`} exact component={CardsBrowserContainer} />
 
               <Route component={Error404}/>              
             </Switch>

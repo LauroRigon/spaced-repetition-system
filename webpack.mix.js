@@ -62,6 +62,6 @@ Mix.listen("configReady", webpackConfig => {
  */
 
 mix.react('resources/assets/js/app/index.js', 'public/js/app.js')
-  .sass('resources/assets/sass/app/app.scss', 'public/css');
+  .sass('resources/assets/sass/app/app.scss', 'public/css').version();
 
 mix.browserSync('localhost:8000');

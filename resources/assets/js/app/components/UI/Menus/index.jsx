@@ -1,28 +1,32 @@
 import React from 'react';
 import { Menu, Icon } from 'semantic-ui-react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, Route, Link } from 'react-router-dom';
 
 const Menus = () => {
   return (
     <React.Fragment>
-      <Menu.Item>
-        <Icon name='home' />
-        <NavLink to='/' activeClassName="selected"> Início </NavLink>
-      </Menu.Item>
-      <Menu.Item >
-        <Icon name='home' />
-        <NavLink to='/decks' activeClassName="selected"> Decks </NavLink>
-      </Menu.Item>
-      <Menu.Item >
-        <Icon name='cog' />
-        <NavLink to='/decks-configs' activeClassName="selected"> Configurações </NavLink>
-      </Menu.Item>
-      <Menu.Item >
-        <Icon name='users' />
-        <NavLink to='/public-decks' activeClassName="selected"> Procurar decks públicos </NavLink>
-      </Menu.Item>
+      <MenuLink to='/' label='Início' icon='home' activeOnlyWhenExact={true}/>
+      
+      <MenuLink to='/decks' label='Decks' icon='clone'/>
+
+      <MenuLink to='/cards-browser' label='Gerenciar cards' icon='browser'/>
+
+      <MenuLink to='/decks-configs' label='Configurações de decks' icon='cog'/>
+
+      <MenuLink to='/public-decks' label='Procurar decks públicos' icon='users'/>
+
     </React.Fragment>
   )
 }
+
+const MenuLink = ({ label, to, icon, activeOnlyWhenExact }) => (
+  <Route
+    path={to}
+    exact={activeOnlyWhenExact}
+    children={({ match }) => (
+        <Link to={to} className={`link item ${match ? "active" : ""}`}>{label} <Icon name={icon} /></Link>
+    )}
+  />
+);
 
 export default Menus;

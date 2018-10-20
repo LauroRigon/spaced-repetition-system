@@ -70,11 +70,13 @@ class DecksRepository extends BaseRepository
     }
 
     public function searchPublicDecks($searchQuery, $pagination = null) {
-        $query = $this->query->where('is_public', 1);
+        $query = $this->query;
 
         if(!is_null($searchQuery)) {
             $query = $query->where('name', 'LIKE', '%' . $searchQuery . '%')->orWhere('description', 'LIKE', '%' . $searchQuery . '%');
         }
+
+        $query = $query->where('is_public', 1);
 
         return $query->with('owner:id,name')->simplePaginate($pagination);
     }

@@ -14,7 +14,11 @@ class DecksFormModal extends Component {
   }
 
   componentDidMount () {
-    this.props.initialize(this.props.initialValues)
+    // this.props.initialize(this.props.initialValues)
+  }
+
+  componentWillUnmount () {
+    this.props.destroy()
   }
 
   render () {
@@ -112,6 +116,7 @@ class DecksFormModal extends Component {
 
 export default reduxForm({
   form: 'deck',
+  destroyOnUnmount: true,
   initialValues: {
     deck_config_id: 0,
     is_public: false,

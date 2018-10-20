@@ -1,8 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { List, Image } from 'semantic-ui-react'
+import { List, Image, Label } from 'semantic-ui-react'
 import deckImg from 'app/../../img/deck.png'
 import { Link } from 'react-router-dom'
+import If from '../../UI/If'
 
 const DecksList = props => {
   if (!props.decks.length) {
@@ -60,7 +61,7 @@ function renderDecks (decks) {
           <Image avatar src={deckImg} />
           {/* <List.Icon name='clone' style={{padding: '10px 0'}}/> */}
           <List.Content>
-            <List.Header as='h4'><Link to={`/decks/${deck.id}`}>{deck.name}</Link></List.Header>
+            <List.Header as='h4'><Link to={`/decks/${deck.id}`}>{deck.name}</Link> <If test={deck.is_public}><Label color='teal' size='tiny'>Público </Label></If> </List.Header>
           </List.Content>
         </List.Item>
     )

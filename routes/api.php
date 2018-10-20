@@ -16,6 +16,9 @@ use Illuminate\Http\Request;
 Route::post('register', 'Auth\RegisterController@register');
 Route::post('login', 'Auth\LoginController@login');
 
+Route::post('password/recover', 'Auth\ForgotPasswordController@recover');
+Route::post('password/reset', 'Auth\ResetPasswordController@reset');
+
 Route::middleware(['api', 'refreshExpiredToken'])->group(function() {
     Route::get('check', 'Auth\LoginController@check');
     Route::get('logout', 'Auth\LoginController@logout');
@@ -44,6 +47,11 @@ Route::middleware(['api', 'refreshExpiredToken'])->group(function() {
 
     Route::prefix('cards')->group(function() {
         Route::post('/', 'CardController@store');
+        Route::put('/{card}', 'CardController@update');
+        Route::put('/suspend/{card}', 'CardController@suspend');
+        Route::put('/unsuspend/{card}', 'CardController@unsuspend');
+        Route::delete('/{card}', 'CardController@destroy');
+        Route::get('/search', 'CardController@searchCards');
 
     });
 
