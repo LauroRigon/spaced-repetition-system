@@ -11,7 +11,7 @@ class CardList extends React.Component {
   render() {
     const { cards } = this.props;
     return (
-      <div style={{overflow: 'overlay'}}>
+      // <div style={{overflow: 'overlay'}}>
         <Table celled striped>
           <Table.Header>
             <Table.Row>
@@ -27,7 +27,7 @@ class CardList extends React.Component {
             {this.renderTableRows(cards)}
           </Table.Body>
         </Table>
-      </div>
+      //</div> 
     )
   }
 
@@ -40,11 +40,11 @@ class CardList extends React.Component {
             Suspenso
           </Label>
         </If>
-          {/* retira tags html */}
+          {/* retira tags html e limita a string */}
           {limitString(card.front_content.text.replace(/<[^>]*>?/g, ''), 40)}
         </Table.Cell>
         <Table.Cell>
-          {/* retira tags html */}
+          {/* retira tags html e limita a string */}
           {limitString(card.back_content.text.replace(/<[^>]*>?/g, ''), 40)}
         </Table.Cell>
         <Table.Cell>
@@ -53,14 +53,13 @@ class CardList extends React.Component {
         <Table.Cell>
           {card.created_at}
         </Table.Cell>
-        <Table.Cell>
+        <Table.Cell textAlign='center'>
           <Dropdown
             icon='settings'
             floating
             pointing='top right'
             button
-            basic
-            direction='left'
+            basic            
             className='icon'
           >
             <Dropdown.Menu>

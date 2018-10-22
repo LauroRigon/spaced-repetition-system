@@ -20,6 +20,10 @@
         "react-hot-loader": "^4.3.4"
     },
     "dependencies": {
+        "@ckeditor/ckeditor5-build-balloon": "^11.1.1",
+        "@ckeditor/ckeditor5-build-classic": "^11.1.1",
+        "@ckeditor/ckeditor5-build-inline": "^11.1.1",
+        "@ckeditor/ckeditor5-react": "^1.0.0",
         "axios": "^0.18.0",
         "babel-preset-react": "^6.23.0",
         "cross-env": "^5.1",

@@ -1,6 +1,10 @@
 let mix = require('laravel-mix');
 
 mix.webpackConfig({
+  externals: {
+    InlineEditor: 'InlineEditor'
+  },
+
   output: {
     publicPath: "https://localhost:8080/"
   },

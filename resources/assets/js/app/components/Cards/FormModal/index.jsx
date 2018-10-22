@@ -6,6 +6,7 @@ import If from '../../UI/If'
 import DropzoneInput from 'app/components/UI/Inputs/DropzoneInput'
 import TextEditor from 'app/components/UI/Inputs/TextEditor'
 import LabelAndSelect from '../../UI/Inputs/LabelAndSelect'
+import CardEditor from '../../UI/Inputs/CardEditor'
 import api from 'app/services/api'
 
 class CardsFormModal extends Component {
@@ -21,13 +22,16 @@ class CardsFormModal extends Component {
     this.handleRemoveBackMidia = this.handleRemoveBackMidia.bind(this)
   }
   componentWillMount () {
-    // if(this.props.isEdit) {
-    //   console.log('era pra da')
-    //   this.props.initialize({deck_id: this.props.deck.id, front_text: 'vai toma no cu'})
-    // } else {
+    if (this.props.isEdit) {
+      console.log('era pra da')
+      this.props.initialize({
+        deck_id: this.props.deck.id,
+        front_text: this.props.cardToEdit.front_content.text,
+        back_text: this.props.cardToEdit.back_content.text
+      })
+    } else {
       this.props.initialize({ deck_id: this.props.deck.id })
-    // }
-    
+    }
   }
 
   setLoading (value) {
@@ -63,34 +67,35 @@ class CardsFormModal extends Component {
   }
 
   onSubmit (data) {
-    if(data.front_text.replace(/&nbsp;+/g, '').length <= 8) return toastr.warning('Atenção!', 'O primeiro campo é obrigatório!')
+    if (data.front_text.replace(/&nbsp;+/g, '').length <= 8) { return toastr.warning('Atenção!', 'O primeiro campo é obrigatório!') }
 
-    const {
-      isEdit,
-      cardToEdit
-    } = this.props
+    const { isEdit, cardToEdit } = this.props
     const type = isEdit ? 'put' : 'post'
 
     this.setLoading(true)
     const formData = this.appendDataToForm(data)
     var paramsToPut = {}
-    if(isEdit) {
+    if (isEdit) {
       paramsToPut = this.parseFromFormData(formData)
-      console.log(paramsToPut)
     }
 
-    api[type]('cards/' + (isEdit ? cardToEdit.id : ''), formData, (isEdit ? {params: paramsToPut} : null))
+    api
+      [type](
+        'cards/' + (isEdit ? cardToEdit.id : ''),
+        formData,
+        isEdit ? { params: paramsToPut } : null
+      )
       .then(response => {
-        toastr.success('Tudo certo!', `Card ${isEdit ? 'atualizado' : 'criado'} com sucesso!`)
+        console.log(this)
+        toastr.success(
+          'Tudo certo!',
+          `Card ${isEdit ? 'atualizado' : 'criado'} com sucesso!`
+        )
+        
         this.props.reset()
-        this.forceUpdate()
+        // this.forceUpdate()
         this.setLoading(false)
-        this.props.onSubmitSuccess()
-      })
-      .catch(({ response }) => {
-        toastr.error('Ocorreu um erro!', 'Erro!')
-        console.log(response.data)
-        this.setLoading(false)
+        (this.props.onSubmitSuccess && this.props.onSubmitSuccess())
       })
   }
 
@@ -103,7 +108,15 @@ class CardsFormModal extends Component {
   }
 
   render () {
-    const { handleSubmit, deck, icon, header, closeOnDimmerClick, cardToEdit, isEdit } = this.props
+    const {
+      handleSubmit,
+      deck,
+      icon,
+      header,
+      closeOnDimmerClick,
+      cardToEdit,
+      isEdit
+    } = this.props
 
     return (
       <Modal
@@ -132,7 +145,12 @@ class CardsFormModal extends Component {
               disabled
               inline
             />
-            <Field name='front_text' component={TextEditor} label='Frente:' initialValue={isEdit ? cardToEdit.front_content.text : ''}/>
+            <Field
+              name='front_text'
+              component={CardEditor}
+              label='Frente:'
+              initialValue={isEdit ? cardToEdit.front_content.text : ''}
+            />
             <If test={!isEdit}>
               <Field
                 name='front_medias'
@@ -145,7 +163,16 @@ class CardsFormModal extends Component {
                 }}
               />
             </If>
-            <Field name='back_text' component={TextEditor} label='Verso:' initialValue={isEdit && cardToEdit.back_content.text != ''  ? cardToEdit.back_content.text : null}/>
+            <Field
+              name='back_text'
+              component={CardEditor}
+              label='Verso:'
+              initialValue={
+                isEdit && cardToEdit.back_content.text != ''
+                  ? cardToEdit.back_content.text
+                  : null
+              }
+            />
             <If test={!isEdit}>
               <Field
                 name='back_medias'

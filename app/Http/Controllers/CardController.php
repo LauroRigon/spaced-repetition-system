@@ -37,7 +37,7 @@ class CardController extends APIController
             }
         }
 
-        return $this->cardsRepository->getUserCards($user, $filter);
+        return $this->cardsRepository->getUserCards($user, $filter, 15);
     }
 
     /**

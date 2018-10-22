@@ -10,7 +10,7 @@ class FilterForm extends Component {
 
     return (
       <React.Fragment>
-        <Form onSubmit={handleSubmit}>
+        <Form onSubmit={() => this.props.onSubmit(1)}>
           <Grid stackable>
             <Grid.Column>
               <Field

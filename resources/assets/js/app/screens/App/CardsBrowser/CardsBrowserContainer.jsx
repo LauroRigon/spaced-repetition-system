@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Grid, Header, Segment, Confirm } from 'semantic-ui-react'
+import { Grid, Header, Segment, Confirm, Pagination } from 'semantic-ui-react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import FilterForm from '../../../components/CardsBrowser/FilterForm'
@@ -14,7 +14,8 @@ class CardsBrowserContainer extends Component {
     super(props)
     this.state = {
       cardIdToDelete: 0,
-      confirmOpen: false
+      confirmOpen: false,
+      currentPage: 1
     }
 
     this.onSubmitSearch = this.onSubmitSearch.bind(this)
@@ -30,8 +31,8 @@ class CardsBrowserContainer extends Component {
     this.props.fetchCards()
   }
 
-  onSubmitSearch (filter) {
-    this.props.fetchCards(filter)
+  onSubmitSearch (page = this.state.currentPage) {
+    this.props.fetchCards(page)
   }
 
   handleEditClick (card) {
@@ -42,16 +43,16 @@ class CardsBrowserContainer extends Component {
       closeOnDimmerClick: false,
       isEdit: true,
       cardToEdit: card,
-      onSubmitSuccess: () => {this.props.hideModal('CardsFormModal'); this.props.fetchCards({})}
+      onSubmitSuccess: () => {this.props.hideModal('CardsFormModal'); this.onSubmitSearch({})}
     })
   }
 
   handleSuspendClick (card) {
-    this.props.suspendCard(card.id, () => this.props.fetchCards())
+    this.props.suspendCard(card.id, () => this.onSubmitSearch())
   }
 
   handleUnsuspendClick (card) {
-    this.props.unsuspendCard(card.id, () => this.props.fetchCards())
+    this.props.unsuspendCard(card.id, () => this.onSubmitSearch())
   }
 
   handleDeleteClick (card) {
@@ -59,7 +60,7 @@ class CardsBrowserContainer extends Component {
   }
 
   handleDeleteCard () {
-    this.props.deleteCard(this.state.cardIdToDelete, () => {this.props.fetchCards(); this.setOpenConfirm(false)})
+    this.props.deleteCard(this.state.cardIdToDelete, () => {this.onSubmitSearch(); this.setOpenConfirm(false)})
   }
 
   setOpenConfirm (value= null, card_id = 0) {
@@ -70,11 +71,19 @@ class CardsBrowserContainer extends Component {
     })
   }
 
+  updateCurrentPage(newPage) {
+    this.setState({
+      ...this.state,
+      currentPage: newPage
+    })
+  }
+
   render () {
     const {
       cardList,
       isFetchingCards,
       isFetchingDecks,
+      paginator,
 
       deckList
     } = this.props
@@ -104,6 +113,16 @@ class CardsBrowserContainer extends Component {
               />
               <div className='ui divider' />
               <CardList cards={cardList} onClickEdit={this.handleEditClick} onClickDelete={this.handleDeleteClick} onClickSuspend={this.handleSuspendClick} onClickUnsuspend={this.handleUnsuspendClick}/>
+            </Segment>
+            <Segment compact disabled={isFetchingCards}>
+            <Pagination 
+                boundaryRange={1}
+                siblingRange={1}
+                totalPages={paginator.total ? Math.ceil((paginator.total / paginator.per_page)) : 0}
+                ellipsisItem='...'
+                activePage={paginator.current_page ? paginator.current_page : 0}
+                onPageChange={(e, pagination) => {this.props.fetchCards(pagination.activePage); this.updateCurrentPage(pagination.activePage)}}
+              />
             </Segment>
           </Grid.Column>
         </Grid.Row>

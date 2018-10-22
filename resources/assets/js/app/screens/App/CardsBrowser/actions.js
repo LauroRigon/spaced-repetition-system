@@ -23,10 +23,11 @@ function setIsFetching(value) {
   }
 }
 
-export function fetchCards(filter = {}) {
-  return dispatch => {
+export function fetchCards(page = 1) {
+  return (dispatch, getState) => {
+    const filter = getState().form['cards-filter'] && getState().form['cards-filter'].values
     dispatch(setIsFetching(true))
-    api.get('/cards/search', { params: filter})
+    api.get(`/cards/search/?page=${page}`, { params: filter})
       .then((response) => {
         const { data, ...paginator } = response.data
         dispatch(setCards(data))

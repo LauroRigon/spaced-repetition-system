@@ -4,7 +4,7 @@ import { labeledErrors } from 'app/services/helpers';
 
 const LabelAndInput = props => {
   const { width, required, label, icon, loading, type, placeholder, meta: { touched, error } } = props
-  
+  console.log(props.input)
   return (
     <FormField width={width} required={required}>
       <label htmlFor={props.name}>{label}</label>

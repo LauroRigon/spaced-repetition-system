@@ -95,7 +95,7 @@ class CardsRepository extends BaseRepository
         return $card->push();
     }
 
-    public function getUserCards($user, $filter)
+    public function getUserCards($user, $filter, $paginator = 20)
     {
         $queryCards = $user->cards();
 
@@ -118,7 +118,7 @@ class CardsRepository extends BaseRepository
             }
         }
 
-        return $queryCards->with(['frontContent', 'backContent', 'deck'])->paginate(20);
+        return $queryCards->with(['frontContent', 'backContent', 'deck'])->paginate($paginator);
     }
 
     public function suspendCard($card)
