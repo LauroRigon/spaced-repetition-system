@@ -8,13 +8,13 @@ import { labeledErrors } from 'app/services/helpers'
 const CardEditor = props => {
   const { width, required, label, meta: { touched, error } } = props
 
-  const renderLabel = label
-      ? <Label attached='top left' color='teal'>{label}</Label>
-      : null
+  // const renderLabel = label
+  //     ? <Label attached='top left' color='teal'>{label}</Label>
+  //     : null
 
   return (
-    <Segment padded>
-      {renderLabel}
+    // <Segment padded>
+    //   {renderLabel}
       <FormField width={width} required={required}>
         <CKEditor
             data={props.input.value}
@@ -30,7 +30,7 @@ const CardEditor = props => {
           />
         {touched && error && <span>{labeledErrors(error)}</span>}
       </FormField>
-    </Segment>
+    // </Segment>
   )
 }
 

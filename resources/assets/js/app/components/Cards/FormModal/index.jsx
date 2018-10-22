@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
 import { reduxForm, Field } from 'redux-form'
 import { toastr } from 'react-redux-toastr'
-import { Form, Modal, Header, Button } from 'semantic-ui-react'
+import { Form, Modal, Header, Button, Segment, Label } from 'semantic-ui-react'
 import If from '../../UI/If'
 import DropzoneInput from 'app/components/UI/Inputs/DropzoneInput'
-import TextEditor from 'app/components/UI/Inputs/TextEditor'
 import LabelAndSelect from '../../UI/Inputs/LabelAndSelect'
 import CardEditor from '../../UI/Inputs/CardEditor'
 import api from 'app/services/api'
@@ -120,6 +119,7 @@ class CardsFormModal extends Component {
 
     return (
       <Modal
+      size='large'
         closeIcon='close'
         open
         className='animated zoomIn'
@@ -145,24 +145,29 @@ class CardsFormModal extends Component {
               disabled
               inline
             />
-            <Field
-              name='front_text'
-              component={CardEditor}
-              label='Frente:'
-              initialValue={isEdit ? cardToEdit.front_content.text : ''}
-            />
-            <If test={!isEdit}>
+            <Segment padded stacked>
+              <Label attached='top left' color='teal'>Verso</Label>
               <Field
-                name='front_medias'
-                component={DropzoneInput}
-                onRemove={this.handleRemoveFrontMidia}
-                dropzone_props={{
-                  multiple: true,
-                  accept: ['image/*', 'audio/mp3'],
-                  maxSize: 2000000
-                }}
+                name='front_text'
+                component={CardEditor}
+                label='Frente:'
+                initialValue={isEdit ? cardToEdit.front_content.text : ''}
               />
-            </If>
+              <If test={!isEdit}>
+                <Field
+                  name='front_medias'
+                  component={DropzoneInput}
+                  onRemove={this.handleRemoveFrontMidia}
+                  dropzone_props={{
+                    multiple: true,
+                    accept: ['image/*', 'audio/mp3'],
+                    maxSize: 2000000
+                  }}
+                />
+              </If>
+            </Segment>
+            <Segment padded stacked>
+              <Label attached='top left' color='teal'>Frente</Label>
             <Field
               name='back_text'
               component={CardEditor}
@@ -185,6 +190,7 @@ class CardsFormModal extends Component {
                 }}
               />
             </If>
+            </Segment>
             <Button primary> {isEdit ? 'Salvar' : 'Criar'} </Button>
           </Form>
           {/* </Segment> */}
