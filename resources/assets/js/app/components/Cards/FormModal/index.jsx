@@ -81,7 +81,7 @@ class CardsFormModal extends Component {
 
     api
       [type](
-        'cards/' + (isEdit ? cardToEdit.id : ''),
+        'cards' + (isEdit ? `/${cardToEdit.id}` : ''),
         formData,
         isEdit ? { params: paramsToPut } : null
       )

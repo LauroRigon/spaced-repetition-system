@@ -43,7 +43,7 @@ class CardsBrowserContainer extends Component {
       closeOnDimmerClick: false,
       isEdit: true,
       cardToEdit: card,
-      onSubmitSuccess: () => {this.props.hideModal('CardsFormModal'); this.onSubmitSearch({})}
+      onSubmitSuccess: () => {this.props.hideModal('CardsFormModal'); this.onSubmitSearch()}
     })
   }
 
