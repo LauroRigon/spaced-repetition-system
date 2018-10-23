@@ -33,7 +33,7 @@ class CardController extends APIController
         if(!!$deck_id) {
             $deck = Deck::find($deck_id);
             if(!$user->can('searchCards', $deck)) {
-                return $this->respondWithForbiddenError();
+                return $this->respondWithForbiddenError('Você não pode acessar esses cards');
             }
         }
 
@@ -55,7 +55,7 @@ class CardController extends APIController
         }
 
         try {
-            $card = $this->cardsRepository->createCardWithContent($data);
+            $card = $this->cardsRepository->createCardWithContent($data, Auth::user()->id);
         } catch (EntityNotFoundException $e) {
             return $this->respondWithError($e->getMessage(), 401);
         } catch (Exception $e) {

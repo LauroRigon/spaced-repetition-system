@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { reduxForm, Field } from 'redux-form'
 import { toastr } from 'react-redux-toastr'
-import { Form, Modal, Header, Button, Segment, Label } from 'semantic-ui-react'
+import { Form, Modal, Header, Button, Segment, Label, Progress } from 'semantic-ui-react'
 import If from '../../UI/If'
 import DropzoneInput from 'app/components/UI/Inputs/DropzoneInput'
 import LabelAndSelect from '../../UI/Inputs/LabelAndSelect'
@@ -12,7 +12,8 @@ class CardsFormModal extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      isLoading: false
+      isLoading: false,
+      uploadProgress: 0
     }
 
     this.onSubmit = this.onSubmit.bind(this)
@@ -22,7 +23,6 @@ class CardsFormModal extends Component {
   }
   componentWillMount () {
     if (this.props.isEdit) {
-      console.log('era pra da')
       this.props.initialize({
         deck_id: this.props.deck.id,
         front_text: this.props.cardToEdit.front_content.text,
@@ -37,8 +37,11 @@ class CardsFormModal extends Component {
     this.setState({ ...this.state, isLoading: value })
   }
 
+  setUploadProgress (value) {
+    this.setState({ ...this.state, uploadProgress: value })
+  }
+
   appendDataToForm (data) {
-    console.log(data)
     var formData = new FormData()
     formData.append('deck_id', data.deck_id)
     formData.append('front_text', data.front_text)
@@ -66,33 +69,33 @@ class CardsFormModal extends Component {
   }
 
   onSubmit (data) {
-    if (data.front_text.replace(/&nbsp;+/g, '').length <= 8) { return toastr.warning('Atenção!', 'O primeiro campo é obrigatório!') }
+    if (!data.front_text || data.front_text.replace(/&nbsp;+/g, '').length < 8) { return toastr.warning('Atenção!', 'O primeiro campo é obrigatório!') }
 
     const { isEdit, cardToEdit } = this.props
     const type = isEdit ? 'put' : 'post'
 
     this.setLoading(true)
     const formData = this.appendDataToForm(data)
-    var paramsToPut = {}
+    var config = {
+      onUploadProgress: (progressEvent) => {this.setUploadProgress(Math.round(progressEvent.loaded / progressEvent.total * 100))}
+    }
     if (isEdit) {
-      paramsToPut = this.parseFromFormData(formData)
+      config['params'] = this.parseFromFormData(formData)
     }
 
     api
       [type](
         'cards' + (isEdit ? `/${cardToEdit.id}` : ''),
         formData,
-        isEdit ? { params: paramsToPut } : null
+        config
       )
       .then(response => {
-        console.log(this)
         toastr.success(
           'Tudo certo!',
           `Card ${isEdit ? 'atualizado' : 'criado'} com sucesso!`
         )
-        
+        this.setUploadProgress(0)
         this.props.reset()
-        // this.forceUpdate()
         this.setLoading(false)
         (this.props.onSubmitSuccess && this.props.onSubmitSuccess())
       })
@@ -134,7 +137,6 @@ class CardsFormModal extends Component {
           </Label> */}
           <Form
             onSubmit={handleSubmit(this.onSubmit)}
-            loading={this.state.isLoading}
           >
             <Field
               name='deck_id'
@@ -191,7 +193,12 @@ class CardsFormModal extends Component {
               />
             </If>
             </Segment>
-            <Button primary> {isEdit ? 'Salvar' : 'Criar'} </Button>
+            <If test={!!this.state.uploadProgress}>
+              <Progress percent={this.state.uploadProgress} size='small' color='blue' indicating progress autoSuccess>
+                  Enviando mídias
+              </Progress>
+            </If>
+            <Button primary loading={this.state.isLoading} disabled={this.state.isLoading}> {isEdit ? 'Salvar' : 'Criar'} </Button>
           </Form>
           {/* </Segment> */}
         </Modal.Content>

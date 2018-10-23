@@ -107,7 +107,6 @@ class ViewDecksContainer extends Component {
   }
 
   handleSubscribeSubmit(values) {
-    console.log(values)
     this.props.subscribeToDeck(this.props.deck.id, values)
     this.props.hideModal()
   }

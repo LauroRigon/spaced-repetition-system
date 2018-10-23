@@ -23,7 +23,6 @@ const DropzoneInput = field => {
           dropzoneRef = node
         }}
         onDrop={filesToUpload => {
-          console.log(files, filesToUpload)
           field.input.onChange(uniqBy(filesToUpload.concat(...files), 'name'))
         }}
       >

@@ -18,7 +18,7 @@ class CreateCardFactor extends Migration
             $table->increments('id');
             $table->integer('user_id')->unsigned();
             $table->integer('card_id')->unsigned();
-            $table->integer('factor');
+            $table->float('factor');
             $table->integer('interval');
             $table->integer('repetitions');
             $table->timestamps();

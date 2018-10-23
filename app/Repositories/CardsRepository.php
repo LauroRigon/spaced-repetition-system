@@ -24,7 +24,7 @@ class CardsRepository extends BaseRepository
      * @param array $data
      * @return Support\Model
      */
-    public function createCardWithContent(array $data) {
+    public function createCardWithContent(array $data, $user_id) {
         $deck = Deck::findOrFail($data['deck_id']);
 
         if($deck->creator_id != Auth::user()->id) {
@@ -44,6 +44,10 @@ class CardsRepository extends BaseRepository
             'type' => 0,
             'front_content_id' => $front_content->id,
             'back_content_id' => $back_content->id
+        ]);
+
+        $card->factor()->create([
+            'user_id' => $user_id,
         ]);
 
         if(array_key_exists('front_medias', $data)){

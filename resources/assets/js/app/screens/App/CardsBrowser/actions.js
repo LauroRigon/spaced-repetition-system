@@ -23,20 +23,24 @@ function setIsFetching(value) {
   }
 }
 
-export function fetchCards(page = 1) {
+export function fetchCards(page = 1, onSuccess = null) {
   return (dispatch, getState) => {
     const filter = getState().form['cards-filter'] && getState().form['cards-filter'].values
     dispatch(setIsFetching(true))
     api.get(`/cards/search/?page=${page}`, { params: filter})
       .then((response) => {
         const { data, ...paginator } = response.data
+        
         dispatch(setCards(data))
         dispatch(setPaginator(paginator))
         dispatch(setIsFetching(false))
-
+        if(onSuccess) {
+          onSuccess(response.data)
+        }
       })
       .catch(({ response }) => {
         console.log(response)
+        toastr.warning('Atenção', response.data.message)
         dispatch(setIsFetching(false))
       })
   }

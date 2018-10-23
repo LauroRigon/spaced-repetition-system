@@ -25,7 +25,9 @@ class DecksRepository extends BaseRepository
 
     public function getAllUsedDecksByUser(User $user)
     {
-        return $user->usesDecks()->withTrashed()->get();
+        return $user->usesDecks()->withTrashed()->get()->each(function ($deck) {
+            $deck->setIsLoggedUserOwner();
+        });
     }
 
     public function findDeckWithPivotIfExist($deck_id, $user_id)

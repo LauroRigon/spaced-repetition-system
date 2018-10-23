@@ -51,8 +51,9 @@ class FilterForm extends Component {
   }
 
   renderDecksOptions (decks) {
-    var options = []
-    options = decks.map((deck, index) => {
+    var avaliableDecks = decks.filter((deck) => deck.isLoggedUserOwner)
+
+    var options = avaliableDecks.map((deck, index) => {
       return { text: deck.name, value: deck.id }
     })
     options.unshift({ text: 'Todos', value: 0 })

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 
 class Deck extends Model
 {
@@ -46,6 +47,13 @@ class Deck extends Model
     }
 
 
-    /*#### MUTATORS ####*/
-    //public function get
+    public function setIsLoggedUserOwner()
+    {
+        if(Auth::user()->id == $this->creator_id) {
+            $this->setAttribute('isLoggedUserOwner', true);
+        }else{
+            $this->setAttribute('isLoggedUserOwner', false);
+        }
+
+    }
 }

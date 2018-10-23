@@ -32,7 +32,8 @@ class CardsBrowserContainer extends Component {
   }
 
   onSubmitSearch (page = this.state.currentPage) {
-    this.props.fetchCards(page)
+    this.props.fetchCards(page, (data) => {this.updateCurrentPage(data.current_page)})
+      
   }
 
   handleEditClick (card) {
@@ -72,6 +73,7 @@ class CardsBrowserContainer extends Component {
   }
 
   updateCurrentPage(newPage) {
+    console.log(newPage)
     this.setState({
       ...this.state,
       currentPage: newPage
@@ -121,7 +123,7 @@ class CardsBrowserContainer extends Component {
                 totalPages={paginator.total ? Math.ceil((paginator.total / paginator.per_page)) : 0}
                 ellipsisItem='...'
                 activePage={paginator.current_page ? paginator.current_page : 0}
-                onPageChange={(e, pagination) => {this.props.fetchCards(pagination.activePage); this.updateCurrentPage(pagination.activePage)}}
+                onPageChange={(e, pagination) => {this.onSubmitSearch(pagination.activePage); document.body.scrollTop = 0;}}
               />
             </Segment>
           </Grid.Column>
