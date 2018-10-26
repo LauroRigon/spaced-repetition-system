@@ -46,19 +46,39 @@ class Deck extends Model
         return $this->hasMany(Card::class);
     }
 
+    /**
+     * Retorna todos os factors de um deck referente a o usuário logado
+     */
+    public function factors()
+    {
+        return $this->hasManyThrough(CardFactor::class,Card::class)->where('user_id', Auth::user()->id);
+    }
+
+    /**
+     * Retorna os card factors novos de um deck para o usuário logado.
+     * Usado para contar quantos novos cards existem
+     */
     public function newCards()
     {
-        return $this->hasManyThrough(CardFactor::class,Card::class)->where('card_status', 'new');
+        return $this->hasManyThrough(CardFactor::class,Card::class)->where('user_id', Auth::user()->id)->where('card_status', 'new');
     }
 
+    /**
+     * Retorna os card factors que estão em aprendizado de um deck para o usuário logado.
+     * Usado para contar quantos cards em aprendizagem existem
+     */
     public function learningCards()
     {
-        return $this->hasManyThrough(CardFactor::class,Card::class)->where('card_status', 'learning');
+        return $this->hasManyThrough(CardFactor::class,Card::class)->where('user_id', Auth::user()->id)->where('card_status', 'learning');
     }
 
+    /**
+     * Retorna os card factors que estão em revisando de um deck para o usuário logado.
+     * Usado para contar quantos cards em revisao existem
+     */
     public function reviewingCards()
     {
-        return $this->hasManyThrough(CardFactor::class,Card::class)->where('card_status', 'reviewing');
+        return $this->hasManyThrough(CardFactor::class,Card::class)->where('user_id', Auth::user()->id)->where('card_status', 'reviewing');
     }
 
     public function setIsLoggedUserOwner()

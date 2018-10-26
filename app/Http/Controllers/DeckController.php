@@ -134,7 +134,8 @@ class DeckController extends APIController
     {
         $deck = Deck::withTrashed()->where('id', $deck)->first();
         $user = Auth::user();
-        $user->usesDecks()->detach($deck->id);
+
+        $this->decksRepository->unsubscribeUserFromDeck($user, $deck);
 
         return $this->respondWithSuccess('Desinscrito com sucesso');
     }

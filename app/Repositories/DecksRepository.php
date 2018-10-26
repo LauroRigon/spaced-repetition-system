@@ -93,7 +93,21 @@ class DecksRepository extends BaseRepository
             unset($pivotData['deck_config_id']);
         }
 
-        return $user->usesDecks()->attach($deck->id, $pivotData);
+        $user->usesDecks()->attach($deck->id, $pivotData);
+
+        $deck->cards->each(function ($card) use($user){
+            $card->factor()->create([
+                'user_id' => $user->id
+            ]);
+        });
+    }
+
+    public function unsubscribeUserFromDeck($user, $deck)
+    {
+        $deck->factors()->delete();
+
+        $user->usesDecks()->detach($deck->id);
+
     }
 
 }

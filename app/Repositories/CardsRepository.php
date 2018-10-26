@@ -47,7 +47,7 @@ class CardsRepository extends BaseRepository
 
         $card->factor()->create([
             'user_id' => $user_id,
-            'card_status' => "new"
+//            'card_status' => "new"
         ]);
 
         if(array_key_exists('front_medias', $data)){
