@@ -171,7 +171,7 @@ class DeckConfigsContainer extends Component {
               <Header as='h2' attached='top'>
                 Suas configurações
               </Header>
-              <Segment attached loading={ui.isFetching}>
+              <Segment attached>
                 <Button
                   icon
                   labelPosition='left'
@@ -181,6 +181,7 @@ class DeckConfigsContainer extends Component {
                   <Icon name='plus' /> Nova
                 </Button>
                 <DeckConfigsList
+                  isLoading={ui.isFetching && !configs.length}
                   configsList={configs}
                   onEditClick={this.handleEditClick}
                   onDeleteClick={this.handleDeleteClick}

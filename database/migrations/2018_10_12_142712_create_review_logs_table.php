@@ -16,10 +16,10 @@ class CreateReviewLogsTable extends Migration
         Schema::create('review_logs', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->increments('id');
-            $table->integer('card_factor_id');
+            $table->integer('card_factor_id')->unsigned();
             $table->integer('ease_chosen');
             $table->integer('factor');
-            $table->integer('type');
+            $table->enum('card_status', ['new', 'learning', 'reviewing']);
             $table->timestamps();
 
             $table->foreign('card_factor_id')->references('id')->on('card_factors');

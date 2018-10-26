@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Card extends Model
 {
-    protected $fillable = ['deck_id', 'type', 'front_content_id', 'back_content_id'];
+    protected $fillable = ['deck_id', 'front_content_id', 'back_content_id'];
 
     /**
      * O card pertence a um deck

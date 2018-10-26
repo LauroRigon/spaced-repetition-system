@@ -122,11 +122,11 @@ class CardsFormModal extends Component {
 
     return (
       <Modal
-      size='large'
+        size='large'
         closeIcon='close'
         open
         className='animated zoomIn'
-        onClose={this.props.hideModal}
+        onClose={() => {this.props.hideModal(); this.props.onClose()}}
         closeOnDimmerClick={closeOnDimmerClick}
       >
         <Modal.Content>

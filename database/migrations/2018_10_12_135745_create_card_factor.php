@@ -18,9 +18,10 @@ class CreateCardFactor extends Migration
             $table->increments('id');
             $table->integer('user_id')->unsigned();
             $table->integer('card_id')->unsigned();
-            $table->float('factor');
-            $table->integer('interval');
-            $table->integer('repetitions');
+            $table->float('factor')->default(2.5);
+            $table->integer('interval')->default(0);
+            $table->integer('repetitions')->default(0);
+            $table->enum('card_status', ['new', 'learning', 'reviewing'])->default('new');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
@@ -35,8 +36,6 @@ class CreateCardFactor extends Migration
      */
     public function down()
     {
-        Schema::table('card_factors', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('card_factors');
     }
 }

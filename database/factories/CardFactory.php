@@ -9,6 +9,5 @@ $factory->define(\App\Models\Card::class, function (Faker $faker) {
         ])->id,
         'front_content_id' => factory(\App\Models\Content::class)->create()->id,
         'back_content_id' => factory(\App\Models\Content::class)->create()->id,
-        'type' => 0
     ];
 });

@@ -32,6 +32,7 @@ class ViewDecksContainer extends Component {
     this.handleFetchDeck = this.handleFetchDeck.bind(this)
 
     this.handleAddCardsClick = this.handleAddCardsClick.bind(this)
+    this.onCloseAddCardModal = this.onCloseAddCardModal.bind(this)
 
     this.handleSubscribeClick = this.handleSubscribeClick.bind(this)
     this.handleSubscribeSubmit = this.handleSubscribeSubmit.bind(this)
@@ -91,9 +92,12 @@ class ViewDecksContainer extends Component {
    * Add card
    */
   handleAddCardsClick () {
-    this.props.showModal('CardsFormModal', {icon: 'plus', header: 'Adicionar card', deck: this.props.deck, closeOnDimmerClick: false})
+    this.props.showModal('CardsFormModal', {icon: 'plus', header: 'Adicionar card', deck: this.props.deck, closeOnDimmerClick: false, onClose: this.onCloseAddCardModal})
   }
 
+  onCloseAddCardModal () {
+    this.handleFetchDeck()
+  }
   /**
    * Subscribe
    */

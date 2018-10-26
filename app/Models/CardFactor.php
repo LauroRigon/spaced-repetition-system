@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class CardFactor extends Model
 {
-    protected $fillable = ['user_id', 'card_id', 'factor', 'interval', 'repetitions'];
+    protected $fillable = ['user_id', 'card_id', 'factor', 'interval', 'repetitions', 'card_status'];
 
     public function user()
     {

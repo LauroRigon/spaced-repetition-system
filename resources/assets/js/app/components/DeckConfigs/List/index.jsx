@@ -1,26 +1,40 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Table, Button } from 'semantic-ui-react'
+import { Table, Button, Loader, Dimmer } from 'semantic-ui-react'
 
-const DeckConfigsList = ({ configsList, onEditClick, onDeleteClick }) => {
+const DeckConfigsList = ({
+  configsList,
+  onEditClick,
+  onDeleteClick,
+  isLoading
+}) => {
   return (
     <React.Fragment>
-      <div style={{overflow: 'overlay'}}>
-      <Table celled unstackable>
-        <Table.Header>
-          <Table.Row>
-            <Table.HeaderCell>Nome</Table.HeaderCell>
-            <Table.HeaderCell>Novos cards/dia</Table.HeaderCell>
-            <Table.HeaderCell>Tocar mídias automaticamente</Table.HeaderCell>
-            <Table.HeaderCell>Ações</Table.HeaderCell>
-          </Table.Row>
-        </Table.Header>
+      <Dimmer.Dimmable as='div' dimmed={isLoading}>
+        <Dimmer active={isLoading} inverted>
+          <Loader/>
+        </Dimmer>
+        <div style={{ overflow: 'overlay' }}>
 
-        <Table.Body>
-          {renderRows(configsList, onEditClick, onDeleteClick)}
-        </Table.Body>
-      </Table>
-      </div>
+          <Table celled unstackable>
+            <Table.Header>
+              <Table.Row>
+                <Table.HeaderCell>Nome</Table.HeaderCell>
+                <Table.HeaderCell>Novos cards/dia</Table.HeaderCell>
+                <Table.HeaderCell>
+                  Tocar mídias automaticamente
+                </Table.HeaderCell>
+                <Table.HeaderCell>Ações</Table.HeaderCell>
+              </Table.Row>
+            </Table.Header>
+
+            <Table.Body>
+              {renderRows(configsList, onEditClick, onDeleteClick)}
+            </Table.Body>
+          </Table>
+
+        </div>
+      </Dimmer.Dimmable>
     </React.Fragment>
   )
 }

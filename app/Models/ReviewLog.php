@@ -7,5 +7,5 @@ use Illuminate\Database\Eloquent\Model;
 class ReviewLog extends Model
 {
 
-    protected $fillable = ['card_factor_id','factor', 'ease_chosen', 'type'];
+    protected $fillable = ['card_factor_id','factor', 'ease_chosen', 'card_status'];
 }

@@ -47,7 +47,6 @@ class CardControllerTest extends TestCase
         ];
 
         $response = $this->withHeader('Authorization', "Bearer $authToken")->json('POST', 'api/cards/', $card_data);
-
         $response->assertStatus(201);
     }
 
@@ -275,7 +274,6 @@ class CardControllerTest extends TestCase
         ]);
 
         $response = $this->withHeader('Authorization', "Bearer $authToken")->json('GET', "api/cards/search");
-//        $response->assertStatus(404);
-        dd($response->content());
+        $response->assertStatus(200);
     }
 }

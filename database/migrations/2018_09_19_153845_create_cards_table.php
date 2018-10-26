@@ -17,7 +17,6 @@ class CreateCardsTable extends Migration
             $table->engine = 'InnoDB';
             $table->increments('id');
             $table->integer('deck_id')->unsigned();
-            $table->integer('type');
             $table->integer('front_content_id')->unsigned();
             $table->integer('back_content_id')->unsigned();
             $table->timestamp('suspended_at')->nullable();

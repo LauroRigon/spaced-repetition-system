@@ -37,7 +37,7 @@ class DecksRepository extends BaseRepository
         }])->first();
         return $withPivot;
         */
-        $alreadySubscribed = User::find($user_id)->usesDecks()->where('deck_id', $deck_id)->with('owner:id,name')->withTrashed()->first();
+        $alreadySubscribed = User::find($user_id)->usesDecks()->where('deck_id', $deck_id)->with('owner:id,name')->withCount(['newCards', 'learningCards', 'reviewingCards'])->withTrashed()->first();
         if($alreadySubscribed != []) {
             return $alreadySubscribed;
         }

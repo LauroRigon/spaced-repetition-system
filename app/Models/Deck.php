@@ -46,6 +46,20 @@ class Deck extends Model
         return $this->hasMany(Card::class);
     }
 
+    public function newCards()
+    {
+        return $this->hasManyThrough(CardFactor::class,Card::class)->where('card_status', 'new');
+    }
+
+    public function learningCards()
+    {
+        return $this->hasManyThrough(CardFactor::class,Card::class)->where('card_status', 'learning');
+    }
+
+    public function reviewingCards()
+    {
+        return $this->hasManyThrough(CardFactor::class,Card::class)->where('card_status', 'reviewing');
+    }
 
     public function setIsLoggedUserOwner()
     {

@@ -41,13 +41,13 @@ class CardsRepository extends BaseRepository
 
         $card = $this->create([
             'deck_id' => $data['deck_id'],
-            'type' => 0,
             'front_content_id' => $front_content->id,
             'back_content_id' => $back_content->id
         ]);
 
         $card->factor()->create([
             'user_id' => $user_id,
+            'card_status' => "new"
         ]);
 
         if(array_key_exists('front_medias', $data)){
@@ -88,6 +88,19 @@ class CardsRepository extends BaseRepository
         $newFactor = $currentFactor + (0.1 - (5 - $answer) * (0.08 + (5 - $answer) * 0.02));
 
         return $newFactor >= 1.30 ? $newFactor : 1.30;
+    }
+
+    public function calcInterval($rep, $factor, $lastInterval)
+    {
+        if($rep == 1) {
+            return 1;
+        }
+
+        if($rep == 2) {
+            return 6;
+        }
+
+        return round($lastInterval * $factor);
     }
 
     public function updateContents($contents, $card)
