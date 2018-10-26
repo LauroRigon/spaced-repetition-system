@@ -14,7 +14,7 @@ class DecksFormModal extends Component {
   }
 
   componentDidMount () {
-    // this.props.initialize(this.props.initialValues)
+    this.props.initialize(this.props.initialValues)
   }
 
   componentWillUnmount () {
