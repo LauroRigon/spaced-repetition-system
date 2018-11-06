@@ -2,7 +2,7 @@
 
 namespace App\Policies;
 
-use App\DeckConfig;
+use App\Models\DeckConfig;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -19,7 +19,7 @@ class DeckConfigPolicy
      */
     public function update(User $user, DeckConfig $conf)
     {
-        if ($conf->user_id == $user->id) {
+        if ($conf->user_id === $user->id) {
             return true;
         }
 

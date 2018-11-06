@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\DeckConfig;
+use App\Models\DeckConfig;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;

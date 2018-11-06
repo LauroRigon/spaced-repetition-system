@@ -6,6 +6,7 @@
   border-style: dashed;
   margin: 2px;
   min-height: 45px;
+  width: 100%;
 }
 
  .dropbox .drop-label {

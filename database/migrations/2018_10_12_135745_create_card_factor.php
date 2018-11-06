@@ -22,6 +22,7 @@ class CreateCardFactor extends Migration
             $table->integer('interval')->default(0);
             $table->integer('repetitions')->default(0);
             $table->enum('card_status', ['new', 'learning', 'reviewing'])->default('new');
+            $table->date('next_review_at')->nullable()->default(null);
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

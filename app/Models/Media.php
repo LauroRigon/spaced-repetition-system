@@ -14,4 +14,12 @@ class Media extends Model
     {
         return $this->belongsTo(Content::class);
     }
+
+    public function resolveUrl()
+    {
+        $path = $this->getAttribute('path');
+        $storagePath = asset(str_replace('public', 'storage', $path));
+        return $this->setAttribute('URL', $storagePath);
+    }
+
 }

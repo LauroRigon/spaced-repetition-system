@@ -9,9 +9,9 @@ const Menus = () => {
       
       <MenuLink to='/decks' label='Decks' icon='clone'/>
 
-      <MenuLink to='/cards-browser' label='Gerenciar cards' icon='browser'/>
-
       <MenuLink to='/decks-configs' label='Configurações de decks' icon='cog'/>
+
+      <MenuLink to='/cards-browser' label='Gerenciar cards' icon='browser'/>
 
       <MenuLink to='/public-decks' label='Procurar decks públicos' icon='users'/>
 

@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Button, Modal, Grid, Segment, Header, Icon } from 'semantic-ui-react'
+import { Link } from 'react-router-dom'
 import FormModal from '../../../components/Decks/FormModal'
 import { SubmissionError } from 'redux-form'
 import {
@@ -74,6 +75,9 @@ class Decks extends Component {
                 >
                   <Icon name='plus' /> Novo
                 </Button>
+                <Link to={`/decks-configs`}>
+                  <Button icon='cog' color='grey' circular floated='right'/>
+                </Link>
                 <DecksList decks={decks} />
               </Segment>
             </Grid.Column>

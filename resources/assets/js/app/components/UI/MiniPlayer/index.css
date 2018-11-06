@@ -1,0 +1,32 @@
+.player {
+  /* width: auto;
+  height: auto; */
+  margin-top: 50px;
+  transition: all 2s;
+}
+
+.controls > a {
+  cursor: pointer;
+  
+}
+
+.progress {
+  position: relative;
+  width: 100%;
+  height: 10px;
+  background-color: #404040;
+  margin-top: 5px;
+  border-radius: 5px;
+}
+
+.progress > .bar {
+  position: absolute;
+  bottom: 0px;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  background-color: #009c95;
+  border-radius: 5px;
+  margin-top: 5px;
+  transition: width 0.1s ease-out;
+}

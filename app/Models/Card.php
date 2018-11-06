@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class Card extends Model
 {
@@ -40,8 +42,28 @@ class Card extends Model
         return $this->hasMany(CardFactor::class);
     }
 
+    public function userFactor()
+    {
+        return $this->hasMany(CardFactor::class)->where('user_id', Auth::user()->id);
+    }
+
     public function getUser()
     {
         return $this->deck->owner;
+    }
+
+    public function isRevisable()
+    {
+        $factor = $this->userFactor()->first();
+
+        if($factor->card_status == 'new' || $factor->card_status == 'learning') {
+            return true;
+        }
+
+        if($factor->card_status == 'reviewing' && $factor->next_review_at <= Carbon::now()) {
+            return true;
+        }
+
+        return false;
     }
 }

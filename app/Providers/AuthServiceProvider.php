@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\DeckConfig;
+use App\Models\DeckConfig;
 use App\Models\Card;
 use App\Models\Deck;
 use App\Policies\CardPolicy;
@@ -34,6 +34,7 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //
+        Gate::define('reviewDeck', 'App\Policies\ReviewPolicy@reviewDeck');
+        Gate::define('answerCard', 'App\Policies\ReviewPolicy@answerCard');
     }
 }

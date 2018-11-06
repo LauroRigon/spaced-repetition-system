@@ -5,7 +5,7 @@ namespace App\Repositories;
 use App\Models\Card;
 use App\Models\Content;
 use App\Models\Media;
-use App\Models\User;
+use App\Models\Reviewlog;
 use App\Repositories\Support\BaseRepository;
 use App\Models\Deck;
 use Carbon\Carbon;
@@ -52,7 +52,7 @@ class CardsRepository extends BaseRepository
 
         if(array_key_exists('front_medias', $data)){
             foreach ($data['front_medias'] as $media) {
-                $savedPath = Storage::put("public/decks/{$card->deck_id}/card-{$card->id}/",$media);
+                $savedPath = Storage::put("public/decks/{$card->deck_id}/card-{$card->id}",$media);
 
                 Media::create([
                     'type' => $media->extension(),
@@ -64,43 +64,17 @@ class CardsRepository extends BaseRepository
 
         if(array_key_exists('back_medias', $data)){
             foreach ($data['back_medias'] as $media) {
-                $savedPath = Storage::put("public/decks/{$card->deck_id}/card-{$card->id}/", $media);
+                $savedPath = Storage::put("public/decks/{$card->deck_id}/card-{$card->id}", $media);
 
                 Media::create([
                     'type' => $media->extension(),
                     'path' => $savedPath,
-                    'content_id' => $front_content->id
+                    'content_id' => $back_content->id
                 ]);
             }
         }
 
         return $card;
-    }
-
-    /**
-     * Calculo pra calcular novo e-factor. Provavelmente nao ficará aqui nesse arquivo!
-     * @param $currentFactor
-     * @param $answer
-     * @return float|int
-     */
-    public function calcNewFactor($currentFactor, $answer)
-    {
-        $newFactor = $currentFactor + (0.1 - (5 - $answer) * (0.08 + (5 - $answer) * 0.02));
-
-        return $newFactor >= 1.30 ? $newFactor : 1.30;
-    }
-
-    public function calcInterval($rep, $factor, $lastInterval)
-    {
-        if($rep == 1) {
-            return 1;
-        }
-
-        if($rep == 2) {
-            return 6;
-        }
-
-        return round($lastInterval * $factor);
     }
 
     public function updateContents($contents, $card)
@@ -148,5 +122,20 @@ class CardsRepository extends BaseRepository
     {
         $card->suspended_at = null;
         return $card->save();
+    }
+
+    public function updateCardFactor($card, $answerValue)
+    {
+        $factor = $card->factor()->where('user_id', Auth::user()->id)->first();
+
+        $factor->reviews()->create([
+            'factor' => $factor->factor,
+            'ease_chosen' => $answerValue,
+            'card_status' => $factor->card_status,
+            'interval' => $factor->interval,
+            'repetitions' => $factor->repetitions
+        ]);
+
+        return $factor->updateFactor($answerValue);
     }
 }

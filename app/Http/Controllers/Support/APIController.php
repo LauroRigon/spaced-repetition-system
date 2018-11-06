@@ -61,7 +61,7 @@ class APIController extends Controller
     {
         return response()->json([
             'success' => false,
-            'data' => $message
+            'message' => $message
         ], $status);
     }
 }

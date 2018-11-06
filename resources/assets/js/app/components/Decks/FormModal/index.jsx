@@ -29,6 +29,7 @@ class DecksFormModal extends Component {
       icon,
       header,
       buttonLabel = 'Enviar',
+      buttonColor = 'green',
       loading,
       onSubmit,
       configList
@@ -92,7 +93,7 @@ class DecksFormModal extends Component {
                   placeholder='Descrição do seu deck'
                 />
 
-                <Button positive icon labelPosition='left' disabled={loading}>
+                <Button color={buttonColor} icon labelPosition='left' disabled={loading}>
                   <Icon name='check' />{buttonLabel}
                 </Button>
               </Form>

@@ -49,9 +49,10 @@ class CardController extends APIController
     public function store(Request $request)
     {
         $data = $request->only('deck_id', 'front_text', 'back_text', 'front_medias', 'back_medias');
+        $data['back_text'] = $data['back_text'] != 'undefined' ? $data['back_text'] : '&nbsp;';
 
         if (!array_key_exists('deck_id', $data) || !array_key_exists('front_text', $data) || !array_key_exists('back_text', $data)) {
-            return $this->respondWithError('Falta dados!', 422);
+            return $this->respondWithError('Faltam dados!', 422);
         }
 
         try {

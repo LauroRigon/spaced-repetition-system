@@ -43,6 +43,12 @@ Route::middleware(['api', 'refreshExpiredToken'])->group(function() {
             Route::put('/{config}', 'DeckConfigController@update');
             Route::delete('/{config}', 'DeckConfigController@destroy');
         });
+
+        Route::prefix('/review')->group(function() {
+            Route::get('/{deck_id}', 'ReviewController@reviewDeck');
+            Route::put('/answer/{card}', 'ReviewController@answerCard');
+            Route::get('/card/{card_id}', 'ReviewController@getCardToReview');
+        });
     });
 
     Route::prefix('cards')->group(function() {
@@ -52,7 +58,6 @@ Route::middleware(['api', 'refreshExpiredToken'])->group(function() {
         Route::put('/unsuspend/{card}', 'CardController@unsuspend');
         Route::delete('/{card}', 'CardController@destroy');
         Route::get('/search', 'CardController@searchCards');
-
     });
 
 

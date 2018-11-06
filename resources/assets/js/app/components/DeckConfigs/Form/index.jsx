@@ -10,7 +10,6 @@ import {
   Segment,
   Button,
   Icon,
-  TextArea,
   Checkbox
 } from 'semantic-ui-react'
 
@@ -19,6 +18,7 @@ const DeckConfigsForm = props => {
     icon,
     header,
     buttonLabel = 'Enviar',
+    buttonColor = 'green',
     loading,
     errors,
     nameValue,
@@ -60,7 +60,7 @@ const DeckConfigsForm = props => {
             <Checkbox label='Tocar automaticamente mídias' toggle checked={autoPlayMediaValue} onChange={() => handleAutoPlayMediaChange()}/>
           </Form.Field>
 
-          <Button positive icon labelPosition='left' disabled={loading}>
+          <Button color={buttonColor} icon labelPosition='left' disabled={loading}>
             <Icon name='check' />{buttonLabel}
           </Button>
         </Form>

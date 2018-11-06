@@ -141,7 +141,8 @@ class DeckConfigsContainer extends Component {
             <DeckConfigsForm
               icon='refresh'
               header='Atualizar configuração'
-              buttonLabel='Atualizar'
+              buttonLabel='Salvar'
+              buttonColor='yellow'
               loading={form.isLoading}
               errors={form.errors}
               nameValue={form.data.name}

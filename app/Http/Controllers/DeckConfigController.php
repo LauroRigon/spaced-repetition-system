@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\DeckConfig;
+use App\Models\DeckConfig;
 use App\Http\Controllers\Support\APIController;
 use App\Http\Requests\Deck\UpdateDeck;
 use App\Http\Requests\DeckConfig\StoreDeckConfig;
@@ -81,8 +81,10 @@ class DeckConfigController extends APIController
             return $this->respondWithForbiddenError();
         }
 
-        if(! $deck_conf->delete()) {
-            return $this->respondWithError('Erro ao tentar excluír!', 500);
+        try {
+            $deck_conf->delete();
+        } catch (\Exception $e){
+            return $this->respondWithError('Erro ao tentar excluír! Verifique se a configuração está sendo usada.', 500);
         }
 
         return $this->respondWithSuccess('Configuração excluída com sucesso!');

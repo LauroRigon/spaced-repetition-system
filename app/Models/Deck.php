@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class Deck extends Model
 {
@@ -15,8 +16,8 @@ class Deck extends Model
     protected $dates = ['deleted_at', 'created_at', 'updated_at'];
 
     protected $casts = [
-        'created_at' => 'datetime:d-m-Y',
-        'updated_at' => 'datetime:d-m-Y',
+        'created_at' => 'datetime:d/m/Y',
+        'updated_at' => 'datetime:d/m/Y',
         'is_public' => 'boolean'
     ];
 
@@ -27,6 +28,31 @@ class Deck extends Model
     public function usersUses()
     {
         return $this->belongsToMany(User::class)->withTimestamps()->withPivot('folder', 'deck_config_id');
+    }
+
+    public function getConfig()
+    {
+        $configId = $this->usersUses()->where('users.id', Auth::user()->id)->first()->pivot->deck_config_id;
+
+        if($configId === null){
+            return null;
+        }
+
+        $config = DeckConfig::find($configId);
+        return $config;
+    }
+
+    public function withConfig()
+    {
+        $configId = $this->usersUses()->where('users.id', Auth::user()->id)->firstOrFail()->pivot->deck_config_id;
+
+        if($configId === null){
+            $this->setAttribute('config', null);
+        }
+
+        $config = DeckConfig::find($configId);
+        $this->setAttribute('config', $config);
+        return $this;
     }
 
     /**
@@ -51,7 +77,7 @@ class Deck extends Model
      */
     public function factors()
     {
-        return $this->hasManyThrough(CardFactor::class,Card::class)->where('user_id', Auth::user()->id);
+        return $this->hasManyThrough(CardFactor::class, Card::class)->where('user_id', Auth::user()->id);
     }
 
     /**
@@ -60,7 +86,10 @@ class Deck extends Model
      */
     public function newCards()
     {
-        return $this->hasManyThrough(CardFactor::class,Card::class)->where('user_id', Auth::user()->id)->where('card_status', 'new');
+        return $this->hasManyThrough(CardFactor::class, Card::class)
+                    ->where('user_id', Auth::user()->id)
+                    ->where('card_status', 'new')
+                    ->whereNull('cards.suspended_at');
     }
 
     /**
@@ -69,7 +98,10 @@ class Deck extends Model
      */
     public function learningCards()
     {
-        return $this->hasManyThrough(CardFactor::class,Card::class)->where('user_id', Auth::user()->id)->where('card_status', 'learning');
+        return $this->hasManyThrough(CardFactor::class, Card::class)
+                    ->where('user_id', Auth::user()->id)
+                    ->where('card_status', 'learning')
+                    ->whereNull('cards.suspended_at');
     }
 
     /**
@@ -78,16 +110,24 @@ class Deck extends Model
      */
     public function reviewingCards()
     {
-        return $this->hasManyThrough(CardFactor::class,Card::class)->where('user_id', Auth::user()->id)->where('card_status', 'reviewing');
+        return $this->hasManyThrough(CardFactor::class, Card::class)
+                    ->where('user_id', Auth::user()->id)
+                    ->where('card_status', 'reviewing')
+                    ->whereDate('next_review_at', '<=', Carbon::now())
+                    ->whereNotNull('next_review_at')
+                    ->whereNull('cards.suspended_at');
     }
+
 
     public function setIsLoggedUserOwner()
     {
-        if(Auth::user()->id == $this->creator_id) {
+        if (Auth::user()->id == $this->creator_id) {
             $this->setAttribute('isLoggedUserOwner', true);
-        }else{
+        } else {
             $this->setAttribute('isLoggedUserOwner', false);
         }
 
     }
+
+
 }

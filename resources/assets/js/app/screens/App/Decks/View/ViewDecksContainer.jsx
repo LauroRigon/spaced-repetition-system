@@ -138,7 +138,8 @@ class ViewDecksContainer extends Component {
         initialValues={initialFormValues}
         icon='refresh'
         header='Editar deck'
-        buttonLabel='Atualizar'
+        buttonLabel='Salvar'
+        buttonColor='yellow'
         loading={ui.isSubmitting}
         configList={configList}
         onSubmit={this.handleSubmit}

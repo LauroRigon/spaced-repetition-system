@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use App\DeckConfig;
+use App\Models\DeckConfig;
 use App\Repositories\Support\BaseRepository;
 
 

@@ -14,6 +14,7 @@ import Register from './Auth/Register';
 import PasswordRecovery from './Auth/PasswordRecovery/PasswordRecovery';
 import OnlyGuestRoute from './routeRules/OnlyGuestRoute';
 import PrivateRoute from './routeRules/PrivateRoute';
+import ReviewController from './App/Review/ReviewController';
 
 export default () => (
   <HashRouter>
@@ -43,9 +44,10 @@ export default () => (
               <Route path={`${match.url}/`} exact component={Home} />
               
               <Route path={`${match.url}decks`} exact component={DecksContainer} />
-              <Route path={`${match.url}decks/:id`} component={(props) => (
+              <Route path={`${match.url}decks/:id`} exact component={(props) => (
                 <ViewDecksContainer key={props.match.params.id} {...props}/>
               )} />
+              <Route path={`${match.url}decks/:id/review`} exact component={ReviewController} />
 
               <Route path={`${match.url}decks-configs`} exact component={DeckConfigsContainer} />
 

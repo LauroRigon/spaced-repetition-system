@@ -18,11 +18,13 @@ class CreateReviewLogsTable extends Migration
             $table->increments('id');
             $table->integer('card_factor_id')->unsigned();
             $table->integer('ease_chosen');
-            $table->integer('factor');
+            $table->float('factor');
             $table->enum('card_status', ['new', 'learning', 'reviewing']);
+            $table->integer('interval');
+            $table->integer('repetitions');
             $table->timestamps();
 
-            $table->foreign('card_factor_id')->references('id')->on('card_factors');
+            $table->foreign('card_factor_id')->references('id')->on('card_factors')->onDelete('cascade');
         });
     }
 

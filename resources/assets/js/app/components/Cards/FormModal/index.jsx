@@ -148,7 +148,7 @@ class CardsFormModal extends Component {
               inline
             />
             <Segment padded stacked>
-              <Label attached='top left' color='teal'>Verso</Label>
+              <Label attached='top left' color='teal'>Frente</Label>
               <Field
                 name='front_text'
                 component={CardEditor}
@@ -161,15 +161,15 @@ class CardsFormModal extends Component {
                   component={DropzoneInput}
                   onRemove={this.handleRemoveFrontMidia}
                   dropzone_props={{
-                    multiple: true,
-                    accept: ['image/*', 'audio/mp3'],
+                    multiple: false,
+                    accept: ['image/jpg', 'image/jpeg', 'image/png','audio/mp3'],
                     maxSize: 2000000
                   }}
                 />
               </If>
             </Segment>
             <Segment padded stacked>
-              <Label attached='top left' color='teal'>Frente</Label>
+              <Label attached='top left' color='teal'>Verso</Label>
             <Field
               name='back_text'
               component={CardEditor}
@@ -186,8 +186,8 @@ class CardsFormModal extends Component {
                 component={DropzoneInput}
                 onRemove={this.handleRemoveBackMidia}
                 dropzone_props={{
-                  multiple: true,
-                  accept: ['image/*', 'audio/mp3'],
+                  multiple: false,
+                  accept: ['image/jpg', 'image/jpeg', 'image/png','audio/mp3'],
                   maxSize: 2000000
                 }}
               />
@@ -198,7 +198,7 @@ class CardsFormModal extends Component {
                   Enviando mídias
               </Progress>
             </If>
-            <Button primary loading={this.state.isLoading} disabled={this.state.isLoading}> {isEdit ? 'Salvar' : 'Criar'} </Button>
+            <Button color={isEdit ? 'yellow' : 'green'} loading={this.state.isLoading} disabled={this.state.isLoading}> {isEdit ? 'Salvar' : 'Criar'} </Button>
           </Form>
           {/* </Segment> */}
         </Modal.Content>
