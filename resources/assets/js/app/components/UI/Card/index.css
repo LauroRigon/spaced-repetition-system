@@ -66,13 +66,27 @@
   }
 }
 
-/* .c-media {
-
+.boingUp {
+  -webkit-animation-name: boingUp;
+          animation-name: boingUp;
+          -webkit-animation-duration: 0.5s;
 }
 
-.c-medias .c-image {
-  flex: 100%;
-  width: 100%;
-  height: 70px;
-} */
+@-webkit-keyframes boingUp {
+  0% {
+    opacity: 0;
+    transform-origin: 50% 0;
+    transform: perspective(800px) rotateX(-100deg);
+  }
+  50% {
+      opacity: 1;
+      transform-origin: 50% 0;
+      transform: perspective(800px) rotateX(5deg);
+  }
+  100% {
+      opacity: 1;
+      transform-origin: 50% 0;
+      transform: perspective(800px) rotateX(0);
+  }
+}
 

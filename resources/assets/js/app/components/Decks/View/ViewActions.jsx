@@ -28,7 +28,7 @@ const ViewActions = ({
         <If test={deck.pivot} >
           <Link to={`/decks/${deck.id}/review`} >
             <Button compact fluid color='green'>
-                Estudar deck
+                Estudar
             </Button>
           </Link>
           <div className='ui section divider' />

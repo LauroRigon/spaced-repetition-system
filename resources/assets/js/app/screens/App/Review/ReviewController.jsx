@@ -39,7 +39,6 @@ class ReviewController extends Component {
   onFetchDeck () {
     if(this.props.cardsOnQueue.length != 0) {
       this.fetchNextCard()
-      this.props.setRevealAnswer(false)
     } else {
       this.props.setReviewDone(true)
     }
@@ -50,6 +49,7 @@ class ReviewController extends Component {
     const nextCard = this.props.cardsOnQueue[0]
     
     if(nextCard) {
+      this.props.setRevealAnswer(false)
       this.props.getCardToReview(nextCard)
     } else {
       this.fetchDeck()
@@ -70,7 +70,11 @@ class ReviewController extends Component {
 
   onReviewCardDone (newFactor) {
     this.props.shiftCardsToReview()
-    toastr.success(`Próxima revisao em ${newFactor.interval} dias!`)
+    if(newFactor.interval <= 0) {
+      toastr.success(`Próxima revisao em poucos minutos!`)  
+    } else{
+      toastr.success(`Próxima revisao em ${newFactor.interval} dias!`)
+    }
     this.fetchNextCard()
   }
 
@@ -98,7 +102,7 @@ class ReviewController extends Component {
       <React.Fragment>
         <Loader active={ui.fetchingDeck}/>
         <If test={!ui.fetchingDeck}>
-          <Grid padded='vertically'>
+          <Grid padded={true}>
             <Grid.Row>
               <Grid.Column width={16} >
                 <CardComponent 
@@ -111,7 +115,7 @@ class ReviewController extends Component {
             </Grid.Row>
             <If test={ui.revealAnswer}>
               <Grid.Row>
-                <Grid.Column width={16}>
+                <Grid.Column width={16} className='boingUp'>
                   <CardComponent 
                     textContent={back_content && reviewingCard.back_content.text}
                     imageSrc={back_image && back_image.URL} 

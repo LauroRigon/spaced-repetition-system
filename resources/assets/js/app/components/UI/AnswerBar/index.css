@@ -11,12 +11,35 @@
 
 .answer-bar-actions {
   margin-top: -18px;
+}
 
+.btn:active {
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
+}
+
+.answer-bar-actions .btn.ans-0 {
+  background-color: rgb(255, 0, 0);
+}
+.answer-bar-actions .btn.ans-1 {
+  background-color: rgb(255, 56, 0);
+}
+.answer-bar-actions .btn.ans-2 {
+  background-color: rgb(255, 115, 0);
+} 
+.answer-bar-actions .btn.ans-3 {
+  background-color: rgb(247, 227, 28);
+}
+.answer-bar-actions .btn.ans-4 {
+  background-color: rgb(196, 247, 28);
+}
+.answer-bar-actions .btn.ans-5 {
+  background-color: rgb(74, 183, 15);
 }
 
 .answer-bar-actions .button {
   position: relative;
-  margin: 0 7px 0 7px; 
+  margin: 0 7px 0 7px;
 }
 
 @media (max-width: 768px) {

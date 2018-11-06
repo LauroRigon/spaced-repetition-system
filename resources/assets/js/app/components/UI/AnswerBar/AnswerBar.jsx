@@ -1,6 +1,6 @@
 import React from 'react'
 import './index.css'
-import { Button, Loader } from 'semantic-ui-react';
+import { Button, Loader, Popup } from 'semantic-ui-react';
 import PropTypes from 'prop-types'
 
 const AnswerBar = props => {
@@ -38,27 +38,87 @@ const renderNextCardBtn = (handleClick, loading = false) => {
 }
 
 const renderFiveAnswers = (handleClick, loading) => {
+  var buttons = []
+  const popupContents = [
+    'Completamente esquecida.',
+    'Incorreta. Lembrada quando revelada.',
+    'Incorreta. A correnta parece ser fácil.',
+    'Correta. Com dificuldade para lembrar.',
+    'Correta. Após uma pequena indecisão.',
+    'Correta.'
+  ]
+
+  for (let index = 0; index <= 5; index++) {
+    const button = (
+      <Popup
+        key={index} 
+        content={popupContents[index]}
+        position='top center'
+        trigger={(<Button className={`btn ans-${index}`} onClick={() => handleClick(index)} disabled={loading}>
+                  {index}
+                  </Button>)} 
+      />
+    )
+    buttons.push(button)
+  }
 
   return (
     <React.Fragment>
-      <Button onClick={() => handleClick(0)} disabled={loading}>
-        0
-      </Button>
-      <Button onClick={() => handleClick(1)} disabled={loading}>
-        1
-      </Button>
-      <Button onClick={() => handleClick(2)} disabled={loading}>
-        2
-      </Button>
-      <Button onClick={() => handleClick(3)} disabled={loading}>
-        3
-      </Button>
-      <Button onClick={() => handleClick(4)} disabled={loading}>
-        4
-      </Button>
-      <Button onClick={() => handleClick(5)} disabled={loading}>
+      {buttons}
+      {/* <Popup 
+        content='Completamente esquecida'
+        position='top center'
+        trigger={(<Button className='btn ans-0' data-content="Add users to your feed" onClick={() => handleClick(0)} disabled={loading}>
+                  0
+                  </Button>)} 
+      />
+
+      <Popup 
+        content='Incorreta. Lembrada quando revelada'
+        position='top center'
+        trigger={(<Button className='btn ans-0' data-content="Add users to your feed" onClick={() => handleClick(1)} disabled={loading}>
+                    1
+                  </Button>)}
+      />
+
+      <Popup 
+        content='Incorreta. A correnta parece ser fácil'
+        position='top center'
+        trigger={(<Button className='btn ans-1' onClick={() => handleClick(2)} disabled={loading}>
+                    2
+                  </Button>)}
+      />
+
+      <Popup 
+        content='Correta. Com dificuldade para lembrar'
+        position='top center'
+        trigger={(<Button className='btn ans-3' onClick={() => handleClick(3)} disabled={loading}>
+                    3
+                  </Button>)}
+      />
+
+      <Popup 
+        content='Correta. Após uma pequena indecisão'
+        position='top center'
+        trigger={(<Button className='btn ans-4' onClick={() => handleClick(4)} disabled={loading}>
+                    4
+                  </Button>)}
+      />
+
+      <Popup 
+        content='Correta. Após uma pequena indecisão'
+        position='top center'
+        trigger={(<Button className='btn ans-4' onClick={() => handleClick(4)} disabled={loading}>
+                    4
+                  </Button>)}
+      />
+
+      
+      
+      
+      <Button className='btn ans-5' onClick={() => handleClick(5)} disabled={loading}>
         5
-      </Button>
+      </Button> */}
     </React.Fragment>
   )
 }
