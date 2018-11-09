@@ -165,7 +165,7 @@ class DecksRepository extends BaseRepository
 
     public function getDeckWithConfig($deck_id)
     {
-        $deck = $this->query->where('id', $deck_id)->firstOrFail();
+        $deck = $this->query->where('id', $deck_id)->withTrashed()->firstOrFail();
         return $deck->withConfig();
     }
 

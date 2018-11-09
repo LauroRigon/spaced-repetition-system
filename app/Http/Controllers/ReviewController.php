@@ -38,7 +38,7 @@ class ReviewController extends APIController
 
     public function answerCard(AnswerCard $request, Card $card)
     {
-        $deck = $card->deck;
+        $deck = $card->deck()->withTrashed()->first();
 
         if(Gate::denies('reviewDeck', $deck)) {
             return $this->respondWithForbiddenError('Você não pode revisar esse deck!');
@@ -58,7 +58,7 @@ class ReviewController extends APIController
     public function getCardToReview($card_id)
     {
         $card = $this->cardsRepository->findById($card_id);
-        $deck = $card->deck;
+        $deck = $card->deck()->withTrashed()->first();
 
         if(Gate::denies('reviewDeck', $deck)) {
             return $this->respondWithForbiddenError('Você não pode revisar esse card!');

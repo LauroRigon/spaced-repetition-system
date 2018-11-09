@@ -33,6 +33,9 @@ export default function (state = initialState, action) {
     case actions.SET_FETCHING_DECK:
       return {...state, ui: {...state.ui, fetchingDeck: action.payload}}
 
+    case actions.SET_FETCHING_CARD:
+      return {...state, ui: {...state.ui, fetchingCard: action.payload}}
+
     case actions.SET_SUBMITING_ANSWER:
       return {...state, ui: {...state.ui, submitingAnswer: action.payload}}
 

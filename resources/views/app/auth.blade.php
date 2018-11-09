@@ -13,6 +13,15 @@
 <div id="root"></div>
 
 <script src="{{ mix('js/app.js') }}"></script>
-<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> -->
+
+<script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
+<script>
+  var OneSignal = window.OneSignal || [];
+  OneSignal.push(function() {
+    OneSignal.init({
+      appId: "75fdcd71-7030-48f3-a8c2-4f57bc06a131",
+    });
+  });
+</script>
 </body>
 </html>

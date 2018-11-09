@@ -71,9 +71,9 @@ class ReviewController extends Component {
   onReviewCardDone (newFactor) {
     this.props.shiftCardsToReview()
     if(newFactor.interval <= 0) {
-      toastr.success(`Próxima revisao em poucos minutos!`)  
+      toastr.success(`Próxima revisão em poucos minutos!`)  
     } else{
-      toastr.success(`Próxima revisao em ${newFactor.interval} dias!`)
+      toastr.success(`Próxima revisão em ${newFactor.interval} dias!`)
     }
     this.fetchNextCard()
   }
@@ -127,7 +127,7 @@ class ReviewController extends Component {
             </If>
           </Grid>
           <AnswerBar
-            loading={ui.submitingAnswer}
+            loading={ui.submitingAnswer || ui.fetchingCard}
             isLearning={(reviewingCard.user_factor && reviewingCard.user_factor[0].card_status == 'new')}
             showAnswerButtons={ui.revealAnswer}
             handleRevealClick={this.handleRevealClick}

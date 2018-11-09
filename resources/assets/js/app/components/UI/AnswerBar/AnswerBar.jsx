@@ -14,7 +14,7 @@ const AnswerBar = props => {
     }
 
   } else {
-    btnActions = renderRevealButton(props.handleRevealClick)
+    btnActions = renderRevealButton(props.handleRevealClick, props.loading)
   }
 
   return (
@@ -29,8 +29,10 @@ const AnswerBar = props => {
   )
 }
 
-const renderRevealButton = (handleClick) => {
-  return (<Button primary onClick={handleClick}>Ver resposta</Button>)
+const renderRevealButton = (handleClick, loading) => {
+
+  console.log(loading)
+  return (<Button primary onClick={handleClick} loading={loading} disabled={loading}>Ver resposta</Button>)
 }
 
 const renderNextCardBtn = (handleClick, loading = false) => {
