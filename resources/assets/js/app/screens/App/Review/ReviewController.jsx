@@ -208,7 +208,7 @@ class ReviewController extends Component {
             handleNextCardBtnClick={this.handleNextCardClick}
           />
         </If>
-      </div>
+      </React.Fragment>
     )
   }
 
