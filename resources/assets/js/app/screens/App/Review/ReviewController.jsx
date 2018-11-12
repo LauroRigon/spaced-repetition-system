@@ -21,14 +21,42 @@ class ReviewController extends Component {
     this.handleAnswerClick = this.handleAnswerClick.bind(this)
     this.handleNextCardClick = this.handleNextCardClick.bind(this)
     this.onReviewCardDone = this.onReviewCardDone.bind(this)
+
+    this.handleKeyDown= this.handleKeyDown.bind(this)
   }
 
   componentWillMount () {
     this.fetchDeck()
   }
 
+  componentDidMount () {
+    document.addEventListener("keydown", this.handleKeyDown);
+  }
+  
   componentWillUnmount () {
     this.props.resetState()
+    document.removeEventListener("keydown", this.handleKeyDown);
+  }
+
+  handleKeyDown (e) {
+    switch (e.key) {
+      case ' ':
+        this.handleNextCardClick()
+        this.handleRevealClick()
+        e.preventDefault()
+        break;
+      
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+          this.handleAnswerClick(e.key)
+          e.preventDefault()
+      default:
+        break;
+    }
   }
 
   fetchDeck () {
@@ -56,15 +84,60 @@ class ReviewController extends Component {
     }
   }
 
+
+  canHandle (what) {
+    const {
+      ui: {
+        revealAnswer,
+        reviewDone,
+        submitingAnswer,
+        fetchingCard,
+        fetchingDeck
+      },
+      reviewingCard
+    } = this.props
+
+    const isLearningCard = (reviewingCard.user_factor && reviewingCard.user_factor[0].card_status == 'new')
+    const isLoadingSomething = submitingAnswer || fetchingCard || fetchingDeck
+    console.log(isLoadingSomething)
+    if(reviewDone || isLoadingSomething) {return false}
+
+    switch (what) {
+      case 'nextCard':
+        if (revealAnswer == false || isLearningCard == false) {
+          return false
+        }
+        return true
+      
+      case 'answerCard':
+        if(revealAnswer == false || isLearningCard) {
+          return false
+        }  
+        return true
+
+      default:
+        break;
+    }
+  }
+
+  
   handleRevealClick () {
     this.props.setRevealAnswer(true)
   }
 
   handleAnswerClick (ease_chosen) {
+    if(!this.canHandle('answerCard')) {
+      return ;
+    }
+
     this.props.sendAnswer(this.props.reviewingCard.id, ease_chosen, this.onReviewCardDone)
   }
 
   handleNextCardClick () {
+    if(!this.canHandle('nextCard')) {
+      return ;
+    }
+
     this.props.sendAnswer(this.props.reviewingCard.id, 0, this.onReviewCardDone)
   }
 
@@ -104,8 +177,8 @@ class ReviewController extends Component {
         <If test={!ui.fetchingDeck}>
           <Grid padded={true}>
             <Grid.Row>
-              <Grid.Column width={16} >
-                <CardComponent 
+              <Grid.Column  >
+                <CardComponent width={16}
                   textContent={front_content && reviewingCard.front_content.text} 
                   imageSrc={front_image && front_image.URL} 
                   audioSrc={front_audio && front_audio.URL}
@@ -135,7 +208,7 @@ class ReviewController extends Component {
             handleNextCardBtnClick={this.handleNextCardClick}
           />
         </If>
-      </React.Fragment>
+      </div>
     )
   }
 
