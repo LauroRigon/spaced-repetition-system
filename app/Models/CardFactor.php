@@ -40,10 +40,9 @@ class CardFactor extends Model
         }
 
         $lastInterval = $this->reviews()->orderBy('created_at', 'DESC')->first()->interval;
-//        dd($lastInterval);
         $currentRepetition = $this->repetitions + 1;
         $newFactor = $this->calcNewFactor($this->factor, $answer);
-//        dd($currentRepetition, $this->factor, $lastInterval);
+
         $newInterval = $this->calcInterval($currentRepetition, $this->factor, $lastInterval);
 
         // se a resposta for menor ou igual a 3, reseta as variaveis mas mantém o e-factor

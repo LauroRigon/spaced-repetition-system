@@ -2,7 +2,9 @@ let mix = require('laravel-mix');
 
 mix.webpackConfig({
   externals: {
-    InlineEditor: 'InlineEditor'
+    InlineEditor: 'InlineEditor',
+    OneSignal: 'OneSignal'
+
   },
 
   output: {

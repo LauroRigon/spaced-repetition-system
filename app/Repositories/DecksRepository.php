@@ -46,7 +46,8 @@ class DecksRepository extends BaseRepository
             if($deckConfig !== null) {
                 //limita o count de new cards conforme a config do user
                 $newCardsCount = $alreadySubscribedDeck->new_cards_count;
-                $newCardsLearnedToday = $this->getNewCardsStudiedToday($alreadySubscribedDeck);
+                $cardsRep = new CardsRepository();
+                $newCardsLearnedToday = $cardsRep->getNewCardsStudiedToday($alreadySubscribedDeck);
                 $limit = intval($deckConfig->new_cards_day - $newCardsLearnedToday);
 
                 $alreadySubscribedDeck->new_cards_count = $newCardsCount > $limit ? $limit : $newCardsCount;
@@ -122,51 +123,13 @@ class DecksRepository extends BaseRepository
         return $user->usesDecks()->detach($deck->id);
     }
 
-    private function parseIds($cards)
-    {
-        return $cards->map(function ($factor) {
-            return $factor['card']['id'];
-        })->toArray();
-    }
-
-    public function getCardListToStudy($deck)
-    {
-        $deckConfig = $deck->getConfig();
-        $newCardsLearnedToday = $this->getNewCardsStudiedToday($deck);
-
-        $newCards = $deck->newCards()->with('card');
-        if($deckConfig !== null) {
-            $limitOfNewCardsToday = intval($deckConfig->new_cards_day - $newCardsLearnedToday);
-            $newCards->limit($limitOfNewCardsToday);
-        }
-        $newCardsIds = $this->parseIds($newCards->get());
-
-        $learningCards = $deck->learningCards()->with('card')->get();
-        $learningCardsIds = $this->parseIds($learningCards);
-
-        $scheduledCards = $deck->reviewingCards()->with('card')->get();
-        $scheduledCardsIds = $this->parseIds($scheduledCards);
-
-        return array_merge($newCardsIds, $learningCardsIds, $scheduledCardsIds);
-    }
-
-    public function getNewCardsStudiedToday($deck)
-    {
-        return $deck->join('cards', 'cards.deck_id' ,'=', 'decks.id')
-                    ->join('card_factors', 'card_factors.card_id', '=', 'cards.id')
-                    ->join('review_logs', 'review_logs.card_factor_id', '=', 'card_factors.id')
-                    ->where('card_factors.user_id', Auth::user()->id)
-                    ->where('decks.id', $deck->id)
-                    ->where('review_logs.card_status', 'new')
-
-                    ->whereDate('review_logs.created_at', Carbon::today())
-                    ->count();
-    }
 
     public function getDeckWithConfig($deck_id)
     {
         $deck = $this->query->where('id', $deck_id)->withTrashed()->firstOrFail();
         return $deck->withConfig();
     }
+
+
 
 }

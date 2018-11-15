@@ -10,6 +10,7 @@ import DeckConfigReducer from '../screens/App/DeckConfigs/reducer'
 import PublicDecksReducer from '../screens/App/PublicDecks/reducer'
 import CardsBrowserReducer from '../screens/App/CardsBrowser/reducer'
 import ReviewReducer from '../screens/App/Review/reducer';
+import ScheduledReducer from '../screens/App/Scheduled/reducer';
 import { reducer as toastrReducer } from 'react-redux-toastr'
 import { reducer as formReducer } from 'redux-form'
 
@@ -26,7 +27,8 @@ const rootReducer = combineReducers({
     deckConfigs: DeckConfigReducer,
     publicDecks: PublicDecksReducer,
     cards: CardsBrowserReducer,
-    review: ReviewReducer
+    review: ReviewReducer,
+    scheduled: ScheduledReducer,
   }),
   toastr: toastrReducer,
   ui: uiReducer,

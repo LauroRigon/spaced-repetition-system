@@ -110,12 +110,17 @@ class Deck extends Model
      */
     public function reviewingCards()
     {
-        return $this->hasManyThrough(CardFactor::class, Card::class)
-                    ->where('user_id', Auth::user()->id)
-                    ->where('card_status', 'reviewing')
-                    ->whereDate('next_review_at', '<=', Carbon::now())
-                    ->whereNotNull('next_review_at')
-                    ->whereNull('cards.suspended_at');
+        $hasManyTh = $this->hasManyThrough(CardFactor::class, Card::class)
+
+                        ->where('card_status', 'reviewing')
+                        ->whereDate('next_review_at', '<=', Carbon::now())
+                        ->whereNotNull('next_review_at')
+                        ->whereNull('cards.suspended_at');
+        if(Auth::user()) {
+            $hasManyTh->where('user_id', Auth::user()->id);
+        }
+
+        return $hasManyTh;
     }
 
 

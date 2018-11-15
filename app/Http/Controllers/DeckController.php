@@ -153,7 +153,7 @@ class DeckController extends APIController
             return $this->respondWithForbiddenError('Você não tem permissão para excluir esse deck.');
         }
 
-        $this->decksRepository->disassociateUserFromDeck($user->id, $deck);
+        $this->decksRepository->unsubscribeUserFromDeck($user, $deck);
 
         //segundo parametro eh de forceDelete para realmente deletar por completo o deck se esse for privado.
         //Do contrário (deck publico) o deck será deletado lógicamente, sendo assim quem era cadastrado nele não ira perder o deck!

@@ -138,4 +138,65 @@ class CardsRepository extends BaseRepository
 
         return $factor->updateFactor($answerValue);
     }
+
+    public function getCardListToStudy($deck)
+    {
+        $deckConfig = $deck->getConfig();
+        $newCardsLearnedToday = $this->getNewCardsStudiedToday($deck);
+
+        $newCards = $deck->newCards()->with('card');
+        if($deckConfig !== null) {
+            $limitOfNewCardsToday = intval($deckConfig->new_cards_day - $newCardsLearnedToday);
+            $newCards->limit($limitOfNewCardsToday);
+        }
+        $newCardsIds = $this->parseIds($newCards->get());
+
+        $learningCards = $deck->learningCards()->with('card')->get();
+        $learningCardsIds = $this->parseIds($learningCards);
+
+        $scheduledCards = $deck->reviewingCards()->with('card')->get();
+        $scheduledCardsIds = $this->parseIds($scheduledCards);
+
+        return array_merge($newCardsIds, $learningCardsIds, $scheduledCardsIds);
+    }
+
+    private function parseIds($cards)
+    {
+        return $cards->map(function ($factor) {
+            return $factor['card']['id'];
+        })->toArray();
+    }
+
+    public function getNewCardsStudiedToday($deck)
+    {
+        return $deck->join('cards', 'cards.deck_id' ,'=', 'decks.id')
+            ->join('card_factors', 'card_factors.card_id', '=', 'cards.id')
+            ->join('review_logs', 'review_logs.card_factor_id', '=', 'card_factors.id')
+            ->where('card_factors.user_id', Auth::user()->id)
+            ->where('decks.id', $deck->id)
+            ->where('review_logs.card_status', 'new')
+
+            ->whereDate('review_logs.created_at', Carbon::today())
+            ->count();
+    }
+
+    /**
+     * @param $user
+     * @param $byDate
+     * @return mixed
+     */
+    public function getReviewsScheduled($user, $byDate)
+    {
+        $scheduled = $user->usesDecks->map( function ($deck) {
+            return $deck->factors()->where('card_status', 'reviewing')->get();
+        })->flatten();
+
+        if($byDate) {
+            $scheduled = $scheduled->groupBy(function ($item, $key) {
+                return $item->next_review_at->format('Y-m-d');
+            });
+        }
+
+        return $scheduled;
+    }
 }

@@ -24,6 +24,8 @@ Route::middleware(['api', 'refreshExpiredToken'])->group(function() {
     Route::get('logout', 'Auth\LoginController@logout');
     Route::get('sendVerificationLink', 'Auth\RegisterController@reSendVerificationLink');
 
+    Route::post('subscribed-to-push', 'PushNotificationController@identifyUser');
+
     Route::prefix('decks')->group(function() {
         Route::prefix('public-decks')->group(function() {
             Route::get('/{query?}', 'DeckController@publicDecks');
@@ -58,6 +60,10 @@ Route::middleware(['api', 'refreshExpiredToken'])->group(function() {
         Route::put('/unsuspend/{card}', 'CardController@unsuspend');
         Route::delete('/{card}', 'CardController@destroy');
         Route::get('/search', 'CardController@searchCards');
+    });
+
+    Route::prefix('calendar')->group(function() {
+       Route::get('/scheduledReviews', 'ReviewController@getReviewsAmountByDate');
     });
 
 

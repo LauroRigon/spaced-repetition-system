@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Gate;
 use App\Repositories\DecksRepository;
 use App\Repositories\CardsRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class ReviewController extends APIController
 {
@@ -29,7 +31,7 @@ class ReviewController extends APIController
             return $this->respondWithForbiddenError('Você não pode revisar esse deck!');
         }
 
-        $cardsToStudy = $this->decksRepository->getCardListToStudy($deckToReview);
+        $cardsToStudy = $this->cardsRepository->getCardListToStudy($deckToReview);
 
         $response['deck'] = $deckToReview;
         $response['cards_to_review'] = $cardsToStudy;
@@ -83,5 +85,32 @@ class ReviewController extends APIController
         });
 
         return $this->respondWithData($card);
+    }
+
+    public function getReviewsAmountByDate()
+    {
+        $user = Auth::user();
+        $scheduledReviewByDate = $this->cardsRepository->getReviewsScheduled($user, true);
+
+        $reviewsBeforeToday = 0;
+        $scheduledCount = $scheduledReviewByDate->map(function ($reviewGroup, $dateGroup) use (&$reviewsBeforeToday) {
+            if ($dateGroup < Carbon::today()){
+                $reviewsBeforeToday += $reviewGroup->count();
+                return false;
+            }
+            return $reviewGroup->count();
+        });
+
+        if($reviewsBeforeToday > 0) {
+            //soma os itens do passado com os de hoje
+            $scheduledCount->put(Carbon::today()->toDateString(), $reviewsBeforeToday) ;
+
+            //limpa onde tem false de value (itens em dias anteriores que foram somados com os de hoje)
+            $scheduledCount = $scheduledCount->filter(function ($value) {
+                return $value;
+            });
+        }
+
+        return $this->respondWithData($scheduledCount);
     }
 }

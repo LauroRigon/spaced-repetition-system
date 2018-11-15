@@ -15,6 +15,7 @@ import PasswordRecovery from './Auth/PasswordRecovery/PasswordRecovery';
 import OnlyGuestRoute from './routeRules/OnlyGuestRoute';
 import PrivateRoute from './routeRules/PrivateRoute';
 import ReviewController from './App/Review/ReviewController';
+import ScheduledController from './App/Scheduled/ScheduledController';
 
 export default () => (
   <HashRouter>
@@ -56,6 +57,8 @@ export default () => (
               )} />
                 
               <Route path={`${match.url}cards-browser`} exact component={CardsBrowserContainer} />
+
+              <Route path={`${match.url}scheduled-calendar`} exact component={ScheduledController} />
 
               <Route component={Error404}/>              
             </Switch>

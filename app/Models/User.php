@@ -81,6 +81,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasManyThrough(Card::class, Deck::class, 'creator_id');
     }
 
+    public function factors()
+    {
+        return $this->hasMany(CardFactor::class);
+    }
+
     /**
      * Retorna os decks criados pelo usuário
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -116,6 +121,17 @@ class User extends Authenticatable implements JWTSubject
     public function deckConfigs()
     {
         return $this->hasMany(DeckConfig::class);
+    }
+
+    public function routeNotificationForOneSignal()
+    {
+        /*
+         * you have to return the one signal player id tat will
+         * receive the message of if you want you can return
+         * an array of players id
+         */
+
+        return $this->push_notification_id;
     }
 
     /*### MUTATORS ###*/

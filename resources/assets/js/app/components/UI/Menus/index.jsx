@@ -13,6 +13,8 @@ const Menus = () => {
 
       <MenuLink to='/cards-browser' label='Gerenciar cards' icon='browser'/>
 
+      <MenuLink to='/scheduled-calendar' label='Revisões agendadas' icon='history'/>
+
       <MenuLink to='/public-decks' label='Procurar decks públicos' icon='users'/>
 
     </React.Fragment>
