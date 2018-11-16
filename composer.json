@@ -13,6 +13,7 @@
         "tymon/jwt-auth": ">=1.0"
     },
     "require-dev": {
+        "barryvdh/laravel-debugbar": "^3.2",
         "doctrine/dbal": "^2.8",
         "filp/whoops": "^2.0",
         "fzaninotto/faker": "^1.4",

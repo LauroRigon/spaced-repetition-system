@@ -64,4 +64,12 @@ class APIController extends Controller
             'message' => $message
         ], $status);
     }
+
+    protected function respondWithFormErrors($errors = [], $status = 500)
+    {
+        return response()->json([
+            'success' => false,
+            'errors' => $errors
+        ], $status);
+    }
 }

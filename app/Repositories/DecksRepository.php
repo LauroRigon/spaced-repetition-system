@@ -28,14 +28,25 @@ class DecksRepository extends BaseRepository
 
     public function getAllUsedDecksByUser(User $user)
     {
-        return $user->usesDecks()->withTrashed()->get()->each(function ($deck) {
-            $deck->setIsLoggedUserOwner();
-        });
+        return $user->usesDecks()
+                    ->withTrashed()
+                    ->withCount(['learningCards', 'reviewingCards', 'newCards'])
+                    ->get()
+                    ->each(function ($deck) {
+                        $deck->setIsLoggedUserOwner();
+                    });
     }
 
-    public function findDeckWithPivotIfExist($deck_id, $user_id)
+    private function limitNewCardsCount($config, $newCardsCount, $newCardsLearnedToday)
     {
-        $alreadySubscribedDeck = User::find($user_id)->usesDecks()
+        $limit = intval($config->new_cards_day - $newCardsLearnedToday);
+
+        return $newCardsCount > $limit ? $limit : $newCardsCount;;
+    }
+
+    public function findDeckWithPivotIfExist($deck_id, $user)
+    {
+        $alreadySubscribedDeck = $user->usesDecks()
         ->where('deck_id', $deck_id)
         ->with('owner:id,name')
         ->withCount(['learningCards', 'reviewingCards', 'newCards'])->withTrashed()->first();
@@ -48,10 +59,9 @@ class DecksRepository extends BaseRepository
                 $newCardsCount = $alreadySubscribedDeck->new_cards_count;
                 $cardsRep = new CardsRepository();
                 $newCardsLearnedToday = $cardsRep->getNewCardsStudiedToday($alreadySubscribedDeck);
-                $limit = intval($deckConfig->new_cards_day - $newCardsLearnedToday);
 
-                $alreadySubscribedDeck->new_cards_count = $newCardsCount > $limit ? $limit : $newCardsCount;
-//                $alreadySubscribedDeck->new_cards_count = ($deckConfig->new_cards_day - $newCardsLearnedToday) <= $deckConfig->new_cards_day ? ($deckConfig->new_cards_day - $newCardsLearnedToday) : $newCardsLearnedCount;
+
+                $alreadySubscribedDeck->new_cards_count = $this->limitNewCardsCount($deckConfig, $newCardsCount, $newCardsLearnedToday);
             }
             return $alreadySubscribedDeck;
         }

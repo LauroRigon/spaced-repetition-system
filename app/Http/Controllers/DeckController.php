@@ -30,7 +30,7 @@ class DeckController extends APIController
     {
         $user = $request->user();
 
-        $deck = $this->decksRepository->findDeckWithPivotIfExist($deck, $user->id);
+        $deck = $this->decksRepository->findDeckWithPivotIfExist($deck, $user);
 
         if ($user->cannot('view', $deck)) {
             return $this->respondWithForbiddenError("Você não tem permissão para acessar esse deck");

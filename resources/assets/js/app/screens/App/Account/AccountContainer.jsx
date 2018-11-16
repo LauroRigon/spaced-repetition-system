@@ -1,19 +1,22 @@
 import React, { Component } from 'react'
 import { Grid, Menu, Header, Segment } from 'semantic-ui-react';
 import ChangePasswordForm from '../../../components/Account/ChangePassword/Form';
+import { toastr } from 'react-redux-toastr'
 import api from 'app/services/api'
 
 class AccountContainer extends Component {
   constructor(props) {
     super(props)
 
-    this.state = {
+    this.initialState = {
       currentPassword: '',
       password: '',
       password_confirmation: '',
       errors: [],
       isSubmting: false
     }
+
+    this.state = this.initialState
 
     this.handleCurrentChange = this.handleCurrentChange.bind(this)
     this.handleNewChange = this.handleNewChange.bind(this)
@@ -27,6 +30,10 @@ class AccountContainer extends Component {
 
   setErrors (errors) {
     this.setState({ ...this.state, errors:  errors})
+  }
+
+  resetState () {
+    this.setState(this.initialState)
   }
 
   handleCurrentChange (value) {
@@ -53,11 +60,12 @@ class AccountContainer extends Component {
     api.put('changePassword', data)
       .then((response) => {
         this.setIsSubmting(false)
-        console.log(response)
+        toastr.success('Tudo certo!', response.data.message)
+        this.resetState()
       })
       .catch(({ response }) => {
         this.setIsSubmting(false)
-        console.log(response)
+        this.setErrors(response.data.errors)
       })
   }
 
@@ -88,6 +96,7 @@ class AccountContainer extends Component {
                     handleConfirmationChange={this.handleConfirmationChange}
                     handleSubmit={this.handleSubmit}
                     loading={this.state.isSubmting}
+                    errors={this.state.errors}
                   />
                 </Grid.Column>
               </Grid>

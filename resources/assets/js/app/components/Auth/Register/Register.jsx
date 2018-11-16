@@ -32,7 +32,7 @@ class AuthRegister extends Component {
           <Grid.Column mobile={16} tablet={12} computer={7}>
             <Header as='h2' color='teal' textAlign='center'>
               Cadastro
-        </Header>
+            </Header>
 
             <Segment>
               <Form size='small'

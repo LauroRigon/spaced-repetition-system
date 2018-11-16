@@ -61,7 +61,27 @@ function renderDecks (decks) {
           <Image avatar src={deckImg} />
           {/* <List.Icon name='clone' style={{padding: '10px 0'}}/> */}
           <List.Content>
-            <List.Header as='h4'><Link to={`/decks/${deck.id}`}>{deck.name}</Link> <If test={deck.is_public}><Label color='teal' size='tiny'>Público </Label></If> </List.Header>
+            <List.Header as='h4'>
+              <Link to={`/decks/${deck.id}`}>{deck.name}</Link> 
+              <If test={deck.is_public}>
+                <Label color='teal' size='tiny'>
+                  Público 
+                </Label>
+              </If> 
+              <Label color='green' size='tiny'>
+                {deck.reviewing_cards_count}
+              </Label>
+
+              <Label color='brown' size='tiny'>
+                {deck.learning_cards_count}
+              </Label>
+
+              <Label color='blue' size='tiny'>
+                {deck.new_cards_count}
+              </Label>
+            </List.Header>
+
+            
           </List.Content>
         </List.Item>
     )

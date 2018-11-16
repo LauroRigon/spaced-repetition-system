@@ -41,59 +41,33 @@ class ChangePasswordController extends BaseAuthController
         return Validator::make($data, [
             'currentPassword' => 'required',
             'password' => 'required|min:6|confirmed'
-        ]);
+        ], $this->messages());
+    }
+
+    private function messages()
+    {
+        return [
+            'currentPassword.required' => 'Digite sua senha atual.',
+            'password.min' => 'No mínimo :min digitos.',
+            'password.required' => 'Digite a sua nova senha.',
+            'password.confirmed' => 'Confirme sua senha.'
+        ];
     }
 
     public function change(Request $request)
     {
-        $credentials = $request->only('email', 'token', 'password', 'password_confirmation');
+        $credentials = $request->only('password', 'currentPassword', 'password_confirmation');
 
         $this->validator($credentials)->validate();
 
-        $user = $this->usersRepository->getUserByResetToken($credentials['token']);
-
-        if(!$user) {
-            return response()->json([
-                'success' => false,
-                'errors' => ['token' => ['Token ou email inválido.']]
-            ], 403);
+        $user = $this->guard()->user();
+        if(!Hash::check($credentials['currentPassword'], $user->getAuthPassword())) {
+            return $this->respondWithFormErrors(['currentPassword' => [0 => 'A senha atual não está correta.']]);
         }
 
-        $reset = $this->usersRepository->getPasswordResetByUserEmail($user->email);
+        $user->password = Hash::make($credentials['password']);
+        $user->save();
 
-        if($this->isTokenExpired($reset)) {
-            return response()->json([
-                'success' => false,
-                'errors' => ['token' => ['Token de recuperação expirado!']]
-            ], 403);
-        }
-
-        $this->usersRepository->update([
-            'password' => Hash::make($credentials['password'])
-        ], $user->id);
-
-        $authToken = $this->guard()->fromUser($user);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Sua senha foi redefinida com sucesso!',
-            'data' => [
-                'account' => $user,
-                'authToken' => $authToken
-            ]
-        ],200);
-    }
-
-    private function isTokenExpired($reset)
-    {
-        $token_created_at = Carbon::createFromTimeString($reset->created_at);
-        $now = Carbon::now();
-        $diffTime = $now->diffInMinutes($token_created_at);
-
-        if($diffTime >= $this->minutesToTokenExpire){
-            return true;
-        }
-
-        return false;
+        return $this->respondWithSuccess('Senha alterada com sucesso!');
     }
 }

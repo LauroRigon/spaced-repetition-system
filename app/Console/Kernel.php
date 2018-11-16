@@ -27,7 +27,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->call(function () {
           NotifyUsersReviews::run();
-        })->everyFiveMinutes();
+        })->dailyAt(8);
     }
 
     /**
