@@ -11,8 +11,12 @@ body {
 
 /*Temporary fix to semantic 2.3.3 issue*/
 .ui.basic.label {
-  background-color: #fff !important;
+  background: none transparent !important;
 }
+.ui.basic.label.teal {
+  background: none transparent !important;
+}  
+
 
 .container {
   padding-top: 80px;

@@ -23,6 +23,7 @@ Route::middleware(['api', 'refreshExpiredToken'])->group(function() {
     Route::get('check', 'Auth\LoginController@check');
     Route::get('logout', 'Auth\LoginController@logout');
     Route::get('sendVerificationLink', 'Auth\RegisterController@reSendVerificationLink');
+    Route::put('changePassword', 'Auth\ChangePasswordController@change');
 
     Route::post('subscribed-to-push', 'PushNotificationController@identifyUser');
 

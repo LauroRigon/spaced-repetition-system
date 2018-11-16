@@ -16,6 +16,7 @@ import OnlyGuestRoute from './routeRules/OnlyGuestRoute';
 import PrivateRoute from './routeRules/PrivateRoute';
 import ReviewController from './App/Review/ReviewController';
 import ScheduledController from './App/Scheduled/ScheduledController';
+import AccountContainer from './App/Account/AccountContainer';
 
 export default () => (
   <HashRouter>
@@ -59,6 +60,8 @@ export default () => (
               <Route path={`${match.url}cards-browser`} exact component={CardsBrowserContainer} />
 
               <Route path={`${match.url}scheduled-calendar`} exact component={ScheduledController} />
+
+              <Route path={`${match.url}account`} exact component={AccountContainer} />
 
               <Route component={Error404}/>              
             </Switch>
