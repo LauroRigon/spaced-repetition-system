@@ -67,18 +67,20 @@ function renderDecks (decks) {
                 <Label color='teal' size='tiny'>
                   Público 
                 </Label>
-              </If> 
-              <Label color='green' size='tiny'>
-                {deck.reviewing_cards_count}
-              </Label>
+              </If>
+              <span style={{}}>
+                <Label color='green' size='tiny'>
+                  {deck.reviewing_cards_count}
+                </Label>
 
-              <Label color='brown' size='tiny'>
-                {deck.learning_cards_count}
-              </Label>
+                <Label color='brown' size='tiny'>
+                  {deck.learning_cards_count}
+                </Label>
 
-              <Label color='blue' size='tiny'>
-                {deck.new_cards_count}
-              </Label>
+                <Label color='blue' size='tiny'>
+                  {deck.new_cards_count}
+                </Label>
+              </span>
             </List.Header>
 
             

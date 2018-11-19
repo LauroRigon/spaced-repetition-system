@@ -5,6 +5,8 @@ import { connect } from 'react-redux'
 import BigCalendar from 'react-big-calendar'
 import moment from 'moment'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
+import './index.css'
+
 import { Grid, Loader, Header } from 'semantic-ui-react';
 
 import { getReviewsAmountByDate } from './actions'
@@ -34,7 +36,7 @@ class ScheduledController extends Component {
     return (
       <React.Fragment>
         <Grid columns={2} stackable padded='vertically' style={{height: '650px'}}>
-          <Grid.Column largeScreen={12} computer={16} tablet={16}>
+          <Grid.Column largeScreen={12} computer={16} tablet={16} style={{height: '600px'}}>
             <Header as='h2' attached='top'>
                   Revisões agendadas
             </Header>
@@ -65,12 +67,15 @@ class ScheduledController extends Component {
 
 const transformToEvent = (datesObj) => {
   return Object.keys(datesObj).map((date, index) => {
-    console.log(moment(date).calendar())
+    const dateToCalendar = new Date(moment(date)._i + ' 10:00:01')
+
+    console.log({dateToSHow: dateToCalendar, realDate: date})
+
     return {
       title: datesObj[date] + ' revisões',
       allDay: true,
-      start: moment(date),
-      end: moment(date)
+      start: dateToCalendar,
+      end: dateToCalendar 
     }
   })
 }

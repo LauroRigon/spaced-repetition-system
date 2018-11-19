@@ -1,0 +1,11 @@
+.rbc-row.rbc-month-header {
+  border-bottom: #009c95 solid 3px;
+}
+
+.rbc-day-bg.rbc-today {
+  background-color: rgba(0, 156, 149, 0.2)
+}
+
+.rbc-event {
+  background-color: #009c95;
+}
