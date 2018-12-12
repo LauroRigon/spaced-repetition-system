@@ -37,7 +37,11 @@ api.interceptors.response.use(response => response, error => {
  * pega o token atual da store
  */
 function getCurrentToken() {
-  return store.getState().user.authToken;
+  try{
+    return store.getState().user.authToken;
+  }catch(er) {
+    console.log(er)
+  }
 }
 
 export default api;

@@ -83,7 +83,6 @@ class RegisterController extends BaseAuthController
         $email = $credentials['email'];
         $password = $credentials['password'];
 
-
         $user = $this->usersRepository->create([
             'name' => $name,
             'email' => $email,
@@ -97,7 +96,7 @@ class RegisterController extends BaseAuthController
 
         return response()->json([
             'success' => true,
-            'message' => 'Valeu mano, Verifica teu email e confirme-o!',
+            'message' => 'Verifique o seu email e siga o link nele para verificar sua conta!',
             'data' => [
                 'account' => $user,
                 'authToken' => $authToken

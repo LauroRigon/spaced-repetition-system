@@ -68,7 +68,7 @@ function renderDecks (decks) {
                   Público 
                 </Label>
               </If>
-              <span style={{}}>
+              <span style={{}} >
                 <Label color='green' size='tiny'>
                   {deck.reviewing_cards_count}
                 </Label>

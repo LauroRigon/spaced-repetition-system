@@ -15,9 +15,9 @@ const ViewActions = ({
   handleOpenEditModal,
   handleOpenAddCardsModal,
   handleOpenSubscribeModal,
+  handleOpenSubscribedEditModal,
   handleUnsubscribeClick
 }) => {
-  console.log(deck)
   return (
     <React.Fragment>
       <Header as='h2' attached='top' textAlign='center'>
@@ -77,6 +77,9 @@ const ViewActions = ({
 
         <If test={authenticatedUser.id != deck.creator_id}>
           <If test={deck.pivot}>
+            <Button color='yellow' fluid onClick={handleOpenSubscribedEditModal} style={{marginBottom: '5px'}}>
+              Editar
+            </Button>
             <Button basic color='red' fluid onClick={handleUnsubscribeClick}>
               Desinscrever-se
             </Button>

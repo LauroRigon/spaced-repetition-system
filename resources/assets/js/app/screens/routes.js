@@ -43,7 +43,8 @@ export default () => (
         <PrivateRoute>
           <AppParent>
             <Switch>
-              <Route path={`${match.url}/`} exact component={Home} />
+              {/* <Route path={`${match.url}/`} exact component={Home} /> */}
+              <Redirect from={`${match.url}/`} to={`${match.url}decks`} />
               
               <Route path={`${match.url}decks`} exact component={DecksContainer} />
               <Route path={`${match.url}decks/:id`} exact component={(props) => (

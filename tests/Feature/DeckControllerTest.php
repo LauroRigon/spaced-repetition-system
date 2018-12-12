@@ -139,7 +139,7 @@ class DeckControllerTest extends TestCase
      * @group deck
      * @return void
      */
-    public function cannot_show_private_deck_from_other_user()
+    public function cannot_show_other_users_deck()
     {
         $userOwner = factory(User::class)->create();
 
@@ -150,8 +150,8 @@ class DeckControllerTest extends TestCase
             'creator_id' => $userOwner->id
         ]);
 
-        $response = $this->withHeader('Authorization', "Bearer $cheaterAuthToken")->json('GET',"api/decks/$deck->id");
-
+        $response = $this->withHeader('Authorization', "Bearer $cheaterAuthToken")
+                         ->json('GET',"api/decks/$deck->id");
         $response->assertForbidden();
     }
 

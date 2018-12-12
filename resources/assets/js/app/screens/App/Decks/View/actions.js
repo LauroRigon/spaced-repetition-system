@@ -78,6 +78,20 @@ export function subscribeToDeck (deck_id, inputs) {
   }
 }
 
+export function updateSubscribedToDeck (deck_id, inputs) {
+  return dispatch => {
+    api.put(`/decks/public-decks/subscribe/${deck_id}`, inputs)
+      .then(( response ) => {
+        dispatch(fetchDeck(deck_id))
+        toastr.success('Tudo certo!', 'Atualizado com sucesso!')
+      })
+      .catch(({ response }) => {
+        console.log(response)
+        toastr.error('Ocorreu um erro!', 'Um erro inesperado ocorreu. Tente novamente!')
+      })
+  }
+}
+
 export function unSubscribe (deck_id, history = null) {
   return dispatch => {
     api.delete(`/decks/public-decks/unsubscribe/${deck_id}`)

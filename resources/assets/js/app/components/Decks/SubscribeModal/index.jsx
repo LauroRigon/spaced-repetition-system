@@ -6,7 +6,11 @@ import LabelAndSelect from '../../UI/Inputs/LabelAndSelect';
 class SubscribeModal extends Component {
 
   componentDidMount() {
-    // this.props.initialize({})
+      console.log(this.props.deck.id || 0)
+      this.props.initialize({
+        deck_config_id: (this.props.deck.pivot && this.props.deck.pivot.deck_config_id) || 0,
+        folder: (this.props.deck.pivot && this.props.deck.pivot.folder) || ''
+      })
   }
   
 
@@ -21,7 +25,7 @@ class SubscribeModal extends Component {
   }
 
   render () {
-    const { handleSubmit, onSubmit } = this.props
+    const { handleSubmit, onSubmit, isEdit } = this.props
 
     return (
       <Modal

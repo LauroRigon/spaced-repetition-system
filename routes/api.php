@@ -31,6 +31,7 @@ Route::middleware(['api', 'refreshExpiredToken'])->group(function() {
         Route::prefix('public-decks')->group(function() {
             Route::get('/{query?}', 'DeckController@publicDecks');
             Route::post('/subscribe/{deck}', 'DeckController@subscribeToDeck');
+            Route::put('/subscribe/{deck}', 'DeckController@updateSubscribedToDeck');
             Route::delete('/unsubscribe/{deck}', 'DeckController@unsubscribeFromDeck');
         });
 

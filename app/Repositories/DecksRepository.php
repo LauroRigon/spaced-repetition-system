@@ -126,6 +126,19 @@ class DecksRepository extends BaseRepository
         });
     }
 
+    public function updateSubscribedToDeck($user, $deck, $pivotData)
+    {
+        if(!array_key_exists('folder', $pivotData) || $pivotData['folder'] == '') {
+            $pivotData['folder'] = '/';
+        }
+
+        if($pivotData['deck_config_id'] == 0) {
+          $pivotData['deck_config_id'] = null;
+        }
+
+        return $user->usesDecks()->where('deck_id', $deck->id)->updateExistingPivot($deck->id, $pivotData);
+    }
+
     public function unsubscribeUserFromDeck($user, $deck)
     {
         $deck->factors()->delete();

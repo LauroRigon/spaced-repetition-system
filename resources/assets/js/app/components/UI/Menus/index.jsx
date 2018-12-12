@@ -5,7 +5,7 @@ import { NavLink, Route, Link } from 'react-router-dom';
 const Menus = () => {
   return (
     <React.Fragment>
-      <MenuLink to='/' label='Início' icon='home' activeOnlyWhenExact={true}/>
+      {/* <MenuLink to='/' label='Início' icon='home' activeOnlyWhenExact={true}/> */}
       
       <MenuLink to='/decks' label='Decks' icon='clone'/>
 

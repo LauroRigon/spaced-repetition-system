@@ -8,6 +8,7 @@ import { loadState } from 'app/localStorage';
 
 
   const devTools = window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+
   const persistedState = loadState();
 
   const store = applyMiddleware(thunk, multi)(createStore)(rootReducer, persistedState, devTools);

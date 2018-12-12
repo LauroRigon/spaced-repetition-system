@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { fetchDeck, sendDeleteDeck, subscribeToDeck, unSubscribe, setDeck } from './actions'
+import { fetchDeck, sendDeleteDeck, subscribeToDeck, updateSubscribedToDeck, unSubscribe, setDeck } from './actions'
 import { Grid } from 'semantic-ui-react'
 import DeckView from '../../../../components/Decks/View'
 import ViewActions from '../../../../components/Decks/View/ViewActions'
@@ -36,6 +36,8 @@ class ViewDecksContainer extends Component {
 
     this.handleSubscribeClick = this.handleSubscribeClick.bind(this)
     this.handleSubscribeSubmit = this.handleSubscribeSubmit.bind(this)
+    this.handleSubscribedUpdateSubmit = this.handleSubscribedUpdateSubmit.bind(this)
+    this.handleSubscribedEditClick = this.handleSubscribedEditClick.bind(this)
     this.handleUnsubscribeClick = this.handleUnsubscribeClick.bind(this)
   }
 
@@ -110,8 +112,22 @@ class ViewDecksContainer extends Component {
     this.props.showModal('SubscribeModal', {deck: deck, configs: configList, onSubmit: this.handleSubscribeSubmit})
   }
 
+  handleSubscribedEditClick() {
+    const {
+      deck,
+      configList
+    } = this.props
+
+    this.props.showModal('SubscribeModal', {deck: deck, configs: configList, onSubmit: this.handleSubscribedUpdateSubmit, idEdit: true})
+  }
+
   handleSubscribeSubmit(values) {
     this.props.subscribeToDeck(this.props.deck.id, values)
+    this.props.hideModal()
+  }
+
+  handleSubscribedUpdateSubmit(values) {
+    this.props.updateSubscribedToDeck(this.props.deck.id, values)
     this.props.hideModal()
   }
 
@@ -163,6 +179,7 @@ class ViewDecksContainer extends Component {
               handleOpenEditModal={this.handleEditModalOpen}
               handleOpenAddCardsModal={this.handleAddCardsClick}
               handleOpenSubscribeModal={this.handleSubscribeClick}
+              handleOpenSubscribedEditModal={this.handleSubscribedEditClick}
               handleOnSubmitSubscribe={this.handleSubscribeSubmit}
               handleUnsubscribeClick={this.handleUnsubscribeClick}
             />
@@ -197,6 +214,7 @@ const mapDispatchToProps = dispatch => {
       hideModal,
 
       subscribeToDeck,
+      updateSubscribedToDeck,
       unSubscribe,
     },
     dispatch

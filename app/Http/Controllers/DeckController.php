@@ -130,6 +130,24 @@ class DeckController extends APIController
         return $this->respondWithSuccess();
     }
 
+    public function updateSubscribedToDeck(Request $request, Deck $deck)
+    {
+        $data = $request->only('folder', 'deck_config_id');
+
+        $user = $request->user();
+        if(!$user->can('subscribe', $deck)) {
+            return $this->respondWithForbiddenError('Você não pode alterar esse deck!');
+        }
+
+        try {
+            $this->decksRepository->updateSubscribedToDeck($user, $deck, $data);
+        }catch(\Exception $e) {
+            return $this->respondWithError($e->getMessage());
+        }
+
+        return $this->respondWithSuccess();
+    }
+
     public function unsubscribeFromDeck($deck)
     {
         $deck = Deck::withTrashed()->where('id', $deck)->first();
