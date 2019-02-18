@@ -9,7 +9,7 @@ import ModalManager from 'app/components/UI/Modals/ModalManager';
 import { setIsSidebarOpen } from 'app/actions/ui/settings';
 import { checkSession } from 'app/actions/user';
 import AppLoader from '../../components/UI/AppLoader';
-import OneSignalButton from '../../components/UI/OneSignalButton';
+// import OneSignalButton from '../../components/UI/OneSignalButton';
 
 class AppParent extends React.Component {
   constructor(props) {
@@ -60,7 +60,7 @@ class AppParent extends React.Component {
 
     return (
       <div className="animated fadeIn">
-        <OneSignalButton />
+        {/* <OneSignalButton /> */}
         <ModalManager/>
         <Header handleSideDrawerClick={this.openSidebar} />
         <SideDrawer visible={!isMobile || isSidebarOpen} user={user} />
